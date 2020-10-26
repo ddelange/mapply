@@ -34,7 +34,7 @@ readme_dest.symlink_to(readme_src)
 
 project = "mapply"
 author = "ddelange"
-copyright = "ddelange"
+copyright = "2020, ddelange"  # noqa:A001
 
 # The full version, including alpha/beta/rc tags
 release = __version__

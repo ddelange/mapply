@@ -1,5 +1,6 @@
 from os import path
-from setuptools import setup
+
+from setuptools import find_packages, setup
 
 here = path.abspath(path.dirname(__file__))
 
@@ -31,19 +32,18 @@ setup(
     install_requires=read_requirements(requirements_path),
     use_scm_version={"write_to": "src/mapply/_version.py"},
     package_dir={"": "src"},
+    packages=find_packages(where="src"),
     author="ddelange",
     author_email="david@delange.dev",
     url="https://github.com/ddelange/mapply",
-    python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*",
+    python_requires=">=3.6",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
+        "License :: OSI Approved :: MIT License",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
@@ -52,4 +52,5 @@ setup(
         "Topic :: Utilities",
     ],
     keywords="pandas parallel apply map applymap multicore multiprocessing",
+    license="MIT",
 )
