@@ -1,7 +1,6 @@
 # mapply
 
 [![build](https://img.shields.io/github/workflow/status/ddelange/mapply/CI/master?logo=github&cacheSeconds=86400)](https://github.com/ddelange/mapply/actions?query=branch%3Amaster)
-[![readthedocs](https://readthedocs.org/projects/mapply/badge/?version=latest)](https://mapply.readthedocs.io/en/latest/?badge=latest)
 [![codecov](https://img.shields.io/codecov/c/github/ddelange/mapply/master?logo=codecov&logoColor=white)](https://codecov.io/gh/ddelange/mapply)
 [![pypi Version](https://img.shields.io/pypi/v/mapply.svg?logo=pypi&logoColor=white)](https://pypi.org/project/mapply/)
 [![python](https://img.shields.io/pypi/pyversions/mapply.svg?logo=python&logoColor=white)](https://pypi.org/project/mapply/)
@@ -23,9 +22,12 @@ This pure-Python, OS independent package is available on [PyPI](https://pypi.org
 $ pip install mapply
 ```
 
+
 ## Usage
 
-For documentation, see [mapply.readthedocs.io](https://mapply.readthedocs.io/en/latest).
+[![readthedocs](https://readthedocs.org/projects/mapply/badge/?version=latest)](https://mapply.readthedocs.io)
+
+For documentation, see [mapply.readthedocs.io](https://mapply.readthedocs.io).
 
 ```py
 import pandas as pd
@@ -40,8 +42,10 @@ mapply.init(
 
 df = pd.DataFrame({"a": list(range(100))})
 
+# Avoid unnecessary multiprocessing: due to chunk_size=100, this will act as regular apply
 df["squared"] = df.mapply(lambda x: x ** 2)
 ```
+
 
 ## Development
 

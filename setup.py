@@ -26,6 +26,7 @@ def read_readme(path):
 
 setup(
     name="mapply",
+    description="Sensible multi-core apply/map/applymap functions for Pandas",
     long_description=read_readme(readme_path),
     long_description_content_type="text/markdown",
     setup_requires=["setuptools_scm"],
