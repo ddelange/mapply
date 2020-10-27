@@ -12,12 +12,3 @@ Welcome to mapply's documentation!
 
    Introduction<README.md>
    _code_reference/index
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
