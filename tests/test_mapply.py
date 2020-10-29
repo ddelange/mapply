@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import pytest
 
 import mapply
 
@@ -63,6 +64,9 @@ def test_series_mapply():
 
     fn = lambda x: x ** 2  # noqa:E731
     series = pd.Series(range(100))
+
+    with pytest.raises(ValueError, match="Passing axis=1 is not allowed for Series"):
+        series.mapply(fn, axis=1)
 
     # convert_dtype=False
     pd.testing.assert_series_equal(
