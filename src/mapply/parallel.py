@@ -80,6 +80,7 @@ def multiprocessing_imap(
 
     if n_chunks == 1 or n_workers == 1:
         # no sense spawning pool
+        pool = None
         stage = map(func, iterable)
     else:
         n_workers = _choose_n_workers(n_chunks, n_workers)
@@ -92,4 +93,9 @@ def multiprocessing_imap(
     if progressbar:
         stage = tqdm(stage, total=n_chunks)
 
-    return list(stage)
+    try:
+        return list(stage)
+    finally:
+        if pool:
+            logger.debug("Closing ProcessPool")
+            pool.clear()
