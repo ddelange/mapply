@@ -27,7 +27,7 @@ $ pip install mapply
 
 [![readthedocs](https://readthedocs.org/projects/mapply/badge/?version=latest)](https://mapply.readthedocs.io)
 
-For documentation, see [mapply.readthedocs.io](https://mapply.readthedocs.io).
+For documentation, see [mapply.readthedocs.io](https://mapply.readthedocs.io/en/stable/_code_reference/mapply.html).
 
 ```py
 import pandas as pd
@@ -36,13 +36,15 @@ import mapply
 mapply.init(
     n_workers=-1,
     chunk_size=100,
-    max_chunks_per_worker=10,
+    max_chunks_per_worker=8,
     progressbar=False
 )
 
 df = pd.DataFrame({"a": list(range(100))})
 
-# Avoid unnecessary multiprocessing: due to chunk_size=100, this will act as regular apply
+# avoid unnecessary multiprocessing:
+# due to chunk_size=100, this will act as regular apply.
+# set chunk_size=1 to skip this check and let max_chunks_per_worker decide.
 df["squared"] = df.mapply(lambda x: x ** 2)
 ```
 

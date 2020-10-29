@@ -62,10 +62,12 @@ def mapply(
     Args:
         df_or_series: Argument reserved to the class instance, a.k.a. 'self'.
         func: func to apply to each column or row.
-        axis: Axis along which func is applied. For Series, axis=1 will error.
-        n_workers: Amount of workers (processes) to spawn.
-        chunk_size: Minimum amount of items per chunk along given axis. Determines upper
-            limit for n_chunks.
+        axis: Axis along which func is applied.
+        n_workers: Maximum amount of workers (processes) to spawn. Might be lowered
+            depending on chunk_size and max_chunks_per_worker. Will throw a warning if
+            set higher than is sensible (see :meth:`mapply.parallel.sensible_cpu_count`).
+        chunk_size: Minimum amount of columns/rows per chunk. Higher value means a higher
+            threshold to go multi-core. Set to 1 to let max_chunks_per_worker decide.
         max_chunks_per_worker: Upper limit on amount of chunks per worker. Will lower
             n_chunks determined by chunk_size if necessary. Set to 0 to skip this check.
         progressbar: Whether to wrap the chunks in a :meth:`tqdm.auto.tqdm`.
@@ -74,6 +76,9 @@ def mapply(
 
     Returns:
         Series or DataFrame resulting from applying func along given axis.
+
+    Raises:
+        ValueError: if a Series is passed in combination with axis=1
     """
     from numpy import array_split
     from pandas import Series, concat
@@ -82,6 +87,10 @@ def mapply(
         axis = ["index", "columns"].index(axis)
 
     isseries = int(isinstance(df_or_series, Series))
+
+    if isseries and axis == 1:
+        raise ValueError("Passing axis=1 is not allowed for Series")
+
     opposite_axis = 1 - (isseries or axis)
 
     n_chunks = _choose_n_chunks(
