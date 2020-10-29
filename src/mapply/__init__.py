@@ -40,8 +40,11 @@ def init(
     Subsequent calls to this function will create/overwrite methods with new settings.
 
     Args:
-        n_workers: Amount of workers (processes) to spawn.
-        chunk_size: Minimum amount of items per chunk. Determines upper limit for n_chunks.
+        n_workers: Maximum amount of workers (processes) to spawn. Might be lowered
+            depending on chunk_size and max_chunks_per_worker. Will throw a warning if
+            set higher than is sensible (see :meth:`mapply.parallel.sensible_cpu_count`).
+        chunk_size: Minimum amount of columns/rows per chunk. Higher value means a higher
+            threshold to go multi-core. Set to 1 to let max_chunks_per_worker decide.
         max_chunks_per_worker: Upper limit on amount of chunks per worker. Will lower
             n_chunks determined by chunk_size if necessary. Set to 0 to skip this check.
         progressbar: Whether to wrap the chunks in a :meth:`tqdm.auto.tqdm`.
