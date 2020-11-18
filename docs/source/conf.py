@@ -6,12 +6,11 @@
 
 # -- Path setup --------------------------------------------------------------
 
-import inspect
-
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#
+
+import inspect
 import sys
 from pathlib import Path
 
@@ -112,17 +111,14 @@ def setup(app):
 # -- Options for sphinx.ext.linkcode -----------------------------------------
 
 
-def linkcode_resolve(
+def linkcode_resolve(  # noqa:CCR001
     domain,
     info,
     blob_url="https://github.com/ddelange/mapply/blob",
     default_branch="master",  # branch used for untagged 'latest' builds on readthedocs
     tag_prefix="",  # could be for instance "v" depending on tagging convention
 ):
-    """Determine a GitHub permalink (with line numbers) for a Python object.
-
-    Adapted from https://github.com/numpy/numpy/blob/v1.19.4/doc/source/conf.py.
-    """
+    """Determine a GitHub permalink (with line numbers) for a Python object. Adapted from https://github.com/numpy/numpy/blob/v1.19.4/doc/source/conf.py."""
     if domain != "py":
         return None
 
@@ -158,10 +154,10 @@ def linkcode_resolve(
 
     sourcefile = sourcefile.relative_to(base_dir)
 
-    if "dev" in __version__:
+    if "dev" in release:
         # setuptools_scm (setup.py) appends a dev identifier to __version__ if there are
         # commits since last tag. For readthedocs, this is only the case when building
         # 'latest' that is newer than 'stable', for which the default_branch is assumed.
         return f"{blob_url}/{default_branch}/{sourcefile}{linespec}"
     else:
-        return f"{blob_url}/{tag_prefix}{__version__}/{sourcefile}{linespec}"
+        return f"{blob_url}/{tag_prefix}{release}/{sourcefile}{linespec}"
