@@ -13,11 +13,10 @@ Example usage:
         progressbar=False
     )
 
-    df = pd.DataFrame({"a": list(range(100))})
+    df = pd.DataFrame({"A": list(range(100))})
 
-    df["squared"] = df.mapply(lambda x: x ** 2)
+    df["squared"] = df.A.mapply(lambda x: x ** 2)
 """
-
 from functools import partialmethod
 
 from mapply._version import version as __version__  # noqa:F401
