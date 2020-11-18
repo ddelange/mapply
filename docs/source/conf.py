@@ -6,6 +6,8 @@
 
 # -- Path setup --------------------------------------------------------------
 
+import inspect
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -51,6 +53,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.coverage",
     "sphinx.ext.napoleon",
+    "sphinx.ext.linkcode",
 ]
 autodoc_typehints = "description"
 
@@ -79,6 +82,9 @@ html_theme = "sphinx_rtd_theme"
 # html_static_path = ["_static"]
 
 
+# -- Options for sphinx.ext.autodoc ------------------------------------------
+
+
 def run_apidoc(_):
     exclude = []
 
@@ -101,3 +107,61 @@ def run_apidoc(_):
 
 def setup(app):
     app.connect("builder-inited", run_apidoc)
+
+
+# -- Options for sphinx.ext.linkcode -----------------------------------------
+
+
+def linkcode_resolve(
+    domain,
+    info,
+    blob_url="https://github.com/ddelange/mapply/blob",
+    default_branch="master",  # branch used for untagged 'latest' builds on readthedocs
+    tag_prefix="",  # could be for instance "v" depending on tagging convention
+):
+    """Determine a GitHub permalink (with line numbers) for a Python object.
+
+    Adapted from https://github.com/numpy/numpy/blob/v1.19.4/doc/source/conf.py.
+    """
+    if domain != "py":
+        return None
+
+    modname = info["module"]
+    fullname = info["fullname"]
+
+    submod = sys.modules.get(modname)
+    if submod is None:
+        return None
+
+    obj = submod
+    for part in fullname.split("."):
+        try:
+            obj = getattr(obj, part)
+        except Exception:
+            return None
+
+    # strip decorators, which would resolve to the source of the decorator
+    # possibly an upstream bug in getsourcefile, bpo-1764286
+    obj = inspect.unwrap(obj)
+
+    try:
+        sourcefile = Path(inspect.getsourcefile(obj))
+    except Exception:
+        return None
+
+    try:
+        source, lineno = inspect.getsourcelines(obj)
+    except Exception:
+        linespec = ""
+    else:
+        linespec = f"#L{lineno}-L{lineno + len(source) - 1}"
+
+    sourcefile = sourcefile.relative_to(base_dir)
+
+    if "dev" in __version__:
+        # setuptools_scm (setup.py) appends a dev identifier to __version__ if there are
+        # commits since last tag. For readthedocs, this is only the case when building
+        # 'latest' that is newer than 'stable', for which the default_branch is assumed.
+        return f"{blob_url}/{default_branch}/{sourcefile}{linespec}"
+    else:
+        return f"{blob_url}/{tag_prefix}{__version__}/{sourcefile}{linespec}"
