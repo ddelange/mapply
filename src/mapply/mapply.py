@@ -6,9 +6,9 @@ Standalone usage (without init):
     import pandas as pd
     from mapply.mapply import mapply
 
-    df = pd.DataFrame({"a": list(range(100))})
+    df = pd.DataFrame({"A": list(range(100))})
 
-    df["squared"] = mapply(df, lambda x: x ** 2, progressbar=False)
+    df["squared"] = mapply(df.A, lambda x: x ** 2, progressbar=False)
 """
 from functools import partial
 from typing import Any, Callable, Tuple, Union

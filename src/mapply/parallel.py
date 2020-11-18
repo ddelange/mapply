@@ -78,13 +78,13 @@ def multiprocessing_imap(
     n_chunks = len(iterable)
     func = partial(func, *args, **kwargs)
 
+    n_workers = _choose_n_workers(n_chunks, n_workers)
+
     if n_chunks == 1 or n_workers == 1:
         # no sense spawning pool
         pool = None
         stage = map(func, iterable)
     else:
-        n_workers = _choose_n_workers(n_chunks, n_workers)
-
         logger.debug("Starting ProcessPool with %d workers", n_workers)
         pool = ProcessPool(n_workers)
 
