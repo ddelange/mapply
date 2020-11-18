@@ -20,7 +20,7 @@ from mapply import __version__
 
 current_dir = Path(__file__).parent.absolute()
 base_dir = current_dir.parents[1]
-code_dir = base_dir / "src" / "mapply"
+code_dir = base_dir / "src"
 
 sys.path.insert(0, str(code_dir))
 
@@ -141,7 +141,7 @@ def linkcode_resolve(  # noqa:CCR001
     obj = inspect.unwrap(obj)
 
     try:
-        sourcefile = Path(inspect.getsourcefile(obj))
+        sourcefile = inspect.getsourcefile(obj)
     except Exception:
         return None
 
@@ -152,12 +152,24 @@ def linkcode_resolve(  # noqa:CCR001
     else:
         linespec = f"#L{lineno}-L{lineno + len(source) - 1}"
 
-    sourcefile = sourcefile.relative_to(base_dir)
+    try:
+        # editable install
+        relsourcefile = Path(sourcefile).relative_to(base_dir)
+    except ValueError as exc:
+        # site-packages
+        if "site-packages/" not in sourcefile:
+            raise RuntimeError(
+                "Expected a pip install -e, or install to site-packages"
+            ) from exc
+
+        relsourcefile = (code_dir / sourcefile.split("site-packages/")[-1]).relative_to(
+            base_dir
+        )
 
     if "dev" in release:
         # setuptools_scm (setup.py) appends a dev identifier to __version__ if there are
         # commits since last tag. For readthedocs, this is only the case when building
         # 'latest' that is newer than 'stable', for which the default_branch is assumed.
-        return f"{blob_url}/{default_branch}/{sourcefile}{linespec}"
+        return f"{blob_url}/{default_branch}/{relsourcefile}{linespec}"
     else:
-        return f"{blob_url}/{tag_prefix}{release}/{sourcefile}{linespec}"
+        return f"{blob_url}/{tag_prefix}{release}/{relsourcefile}{linespec}"
