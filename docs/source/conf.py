@@ -34,6 +34,7 @@ readme_dest.symlink_to(readme_src)
 # -- Project information -----------------------------------------------------
 
 project = "mapply"
+project_url = "https://github.com/ddelange/mapply"
 author = "ddelange"
 copyright = "2020, ddelange"  # noqa:A001
 
@@ -50,9 +51,9 @@ extensions = [
     "recommonmark",
     "sphinx_rtd_theme",
     "sphinx.ext.autodoc",
-    "sphinx.ext.coverage",
     "sphinx.ext.napoleon",
     "sphinx.ext.linkcode",
+    "sphinx.ext.intersphinx",
 ]
 autodoc_typehints = "description"
 
@@ -108,13 +109,13 @@ def setup(app):
     app.connect("builder-inited", run_apidoc)
 
 
-# -- Options for sphinx.ext.linkcode -----------------------------------------
+# -- Options for sphinx.ext.linkcode: [source] links -------------------------
 
 
 def linkcode_resolve(  # noqa:CCR001
     domain,
     info,
-    blob_url="https://github.com/ddelange/mapply/blob",
+    blob_url=f"{project_url.rstrip('/')}/blob",
     default_branch="master",  # branch used for untagged 'latest' builds on readthedocs
     tag_prefix="",  # could be for instance "v" depending on tagging convention
 ):
@@ -173,3 +174,13 @@ def linkcode_resolve(  # noqa:CCR001
         return f"{blob_url}/{default_branch}/{relsourcefile}{linespec}"
     else:
         return f"{blob_url}/{tag_prefix}{release}/{relsourcefile}{linespec}"
+
+
+# -- Options for sphinx.ext.intersphinx --------------------------------------
+
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "pandas": ("https://pandas.pydata.org/pandas-docs/stable", None),
+    "pathos": ("https://pathos.readthedocs.io/en/latest", None),
+    # "tqdm": ("https://tqdm.github.io/docs/tqdm", None),  # mkdocs not working
+}
