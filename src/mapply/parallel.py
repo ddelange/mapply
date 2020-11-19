@@ -1,4 +1,4 @@
-"""Submodule containing code to distribute computation over multiple processes using :meth:`pathos.multiprocessing.ProcessPool`.
+"""Submodule containing code to distribute computation over multiple processes using :class:`pathos.multiprocessing.ProcessPool`.
 
 Standalone usage:
 ::
@@ -80,7 +80,7 @@ def multiprocessing_imap(
 
     n_workers = _choose_n_workers(n_chunks, n_workers)
 
-    if n_chunks == 1 or n_workers == 1:
+    if n_workers <= 1:
         # no sense spawning pool
         pool = None
         stage = map(func, iterable)

@@ -37,6 +37,9 @@ setup(
     author="ddelange",
     author_email="david@delange.dev",
     url="https://github.com/ddelange/mapply",
+    project_urls={
+        "Documentation": "https://mapply.readthedocs.io",
+    },
     python_requires=">=3.6",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
