@@ -66,3 +66,4 @@ repos:
     hooks:
       - id: interrogate
         pass_filenames: false
+        args: [-c, setup.cfg]

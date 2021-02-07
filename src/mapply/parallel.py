@@ -18,7 +18,7 @@ Standalone usage:
 """
 import logging
 from functools import partial
-from typing import Any, Callable, Iterable, List
+from typing import Any, Callable, Iterable, List, Optional
 
 import psutil
 from pathos.multiprocessing import ProcessPool
@@ -37,7 +37,7 @@ DEFAULT_CHUNK_SIZE = 100
 DEFAULT_MAX_CHUNKS_PER_WORKER = 8
 
 
-def _choose_n_workers(n_chunks: int, n_workers: int) -> int:
+def _choose_n_workers(n_chunks: Optional[int], n_workers: int) -> int:
     """Choose final amount of workers to be spawned for received input."""
     if n_workers < 1:
         n_workers = N_CORES
@@ -49,7 +49,10 @@ def _choose_n_workers(n_chunks: int, n_workers: int) -> int:
         )
 
     # no sense having more workers than chunks
-    return min(n_workers, n_chunks)
+    if n_chunks is not None:
+        n_workers = min(n_workers, n_chunks)
+
+    return n_workers
 
 
 def multiprocessing_imap(
@@ -74,8 +77,7 @@ def multiprocessing_imap(
     Returns:
         Results in same order as input iterable.
     """
-    iterable = list(iterable)  # exhaust if iterable is a generator
-    n_chunks = len(iterable)
+    n_chunks: Optional[int] = tqdm(iterable, disable=True).__len__()  # doesn't exhaust
     func = partial(func, *args, **kwargs)
 
     n_workers = _choose_n_workers(n_chunks, n_workers)
@@ -91,7 +93,7 @@ def multiprocessing_imap(
         stage = pool.imap(func, iterable)
 
     if progressbar:
-        stage = tqdm(stage, total=n_chunks)
+        stage = tqdm(stage)
 
     try:
         return list(stage)
