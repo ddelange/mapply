@@ -35,7 +35,7 @@ setup(
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     author="ddelange",
-    author_email="david@delange.dev",
+    author_email="ddelange@delange.dev",
     url="https://github.com/ddelange/mapply",
     project_urls={
         "Documentation": "https://mapply.readthedocs.io",
