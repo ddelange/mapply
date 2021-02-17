@@ -13,12 +13,10 @@ Standalone usage (without init):
 from functools import partial
 from typing import Any, Callable, Tuple, Union
 
-from mapply.parallel import (
-    DEFAULT_CHUNK_SIZE,
-    DEFAULT_MAX_CHUNKS_PER_WORKER,
-    N_CORES,
-    multiprocessing_imap,
-)
+from mapply.parallel import N_CORES, multiprocessing_imap
+
+DEFAULT_CHUNK_SIZE = 100
+DEFAULT_MAX_CHUNKS_PER_WORKER = 8
 
 
 def _choose_n_chunks(
