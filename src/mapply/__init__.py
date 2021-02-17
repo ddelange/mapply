@@ -20,8 +20,8 @@ Example usage:
 from functools import partialmethod
 
 from mapply._version import version as __version__  # noqa:F401
+from mapply.mapply import DEFAULT_CHUNK_SIZE, DEFAULT_MAX_CHUNKS_PER_WORKER
 from mapply.mapply import mapply as _mapply
-from mapply.parallel import DEFAULT_CHUNK_SIZE, DEFAULT_MAX_CHUNKS_PER_WORKER
 
 
 def init(

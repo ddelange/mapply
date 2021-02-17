@@ -22,9 +22,11 @@ from typing import Any, Callable, Iterable, List, Optional
 
 import psutil
 from pathos.multiprocessing import ProcessPool
-from tqdm.auto import tqdm
+from tqdm.auto import tqdm as _tqdm
 
 logger = logging.getLogger(__name__)
+
+tqdm = partial(_tqdm, dynamic_ncols=True)
 
 
 def sensible_cpu_count() -> int:
@@ -33,8 +35,6 @@ def sensible_cpu_count() -> int:
 
 
 N_CORES = sensible_cpu_count()
-DEFAULT_CHUNK_SIZE = 100
-DEFAULT_MAX_CHUNKS_PER_WORKER = 8
 
 
 def _choose_n_workers(n_chunks: Optional[int], n_workers: int) -> int:
@@ -93,7 +93,7 @@ def multiprocessing_imap(
         stage = pool.imap(func, iterable)
 
     if progressbar:
-        stage = tqdm(stage)
+        stage = tqdm(stage, total=n_chunks)
 
     try:
         return list(stage)
