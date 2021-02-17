@@ -57,6 +57,14 @@ def test_df_mapply():
         df.mapply(lambda x: x ** 2),
     )
 
+    # concat for only one result
+    mapply.init(progressbar=False, chunk_size=100, n_workers=2)
+    df = pd.DataFrame(list(range(1, 200)))  # (199, 1)
+    pd.testing.assert_series_equal(
+        df.apply(sum, axis=1),
+        df.mapply(sum, axis=1),
+    )
+
 
 def test_series_mapply():
     # chunk_size>1

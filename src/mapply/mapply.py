@@ -116,7 +116,11 @@ def mapply(
         progressbar=progressbar,
     )
 
-    if not isseries and results[0].index.equals(df_or_series.index):
+    if (
+        not isseries
+        and len(results) > 1
+        and results[0].index.equals(df_or_series.index)
+    ):
         return concat(results, axis=1, copy=False)
 
     return concat(results, copy=False)
