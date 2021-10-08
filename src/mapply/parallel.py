@@ -79,6 +79,7 @@ def multiprocessing_imap(
 
     Raises:
         Exception: Any error occurred during computation (will terminate the pool early).
+        KeyboardInterrupt: Any KeyboardInterrupt sent by the user (will terminate the pool early).
     """
     n_chunks: Optional[int] = tqdm(iterable, disable=True).__len__()  # doesn't exhaust
     func = partial(func, *args, **kwargs)
@@ -100,10 +101,9 @@ def multiprocessing_imap(
 
     try:
         return list(stage)
-    except Exception:
+    except (Exception, KeyboardInterrupt):
         if pool:
             logger.debug("Terminating ProcessPool")
-            pool.close()
             pool.terminate()
         raise
     finally:
