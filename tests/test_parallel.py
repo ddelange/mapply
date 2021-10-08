@@ -24,6 +24,12 @@ def test_multiprocessing_imap(size=100, power=1.1):
     assert multicore_list1 == multicore_list3
     assert multicore_list1 == [foo(x, power=power) for x in range(size)]
     with pytest.raises(ValueError, match="reraise"):
+        # hit with ProcessPool
         multiprocessing_imap(
             foo, range(size), power=None, progressbar=False, n_workers=2
+        )
+    with pytest.raises(ValueError, match="reraise"):
+        # hit without ProcessPool
+        multiprocessing_imap(
+            foo, range(size), power=None, progressbar=False, n_workers=1
         )
