@@ -94,7 +94,12 @@ def multiprocessing_imap(
         logger.debug("Starting ProcessPool with %d workers", n_workers)
         pool = ProcessPool(n_workers)
 
-        stage = pool.imap(func, iterable)
+        if n_chunks is None:
+            # iterable hasn't been exhausted yet, let imap exhaust it
+            stage = pool.imap(func, iterable)
+        else:
+            # no need for imap, can use (mostly) faster map
+            stage = pool.map(func, iterable)
 
     if progressbar:
         stage = tqdm(stage, total=n_chunks)
