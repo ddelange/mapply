@@ -8,17 +8,19 @@ Standalone usage:
     def some_heavy_computation(x, power):
         return pow(x, power)
 
-    multicore_list = multiprocessing_imap(
-        some_heavy_computation,
-        range(100),
-        power=2.5,
-        progressbar=False,
-        n_workers=-1
+    multicore_list = list(
+        multiprocessing_imap(
+            some_heavy_computation,
+            range(100),
+            power=2.5,
+            progressbar=False,
+            n_workers=-1,
+        )
     )
 """
 import logging
 from functools import partial
-from typing import Any, Callable, Iterable, List, Optional
+from typing import Any, Callable, Iterable, Optional
 
 import psutil
 from pathos.multiprocessing import ProcessPool
@@ -63,7 +65,7 @@ def multiprocessing_imap(
     progressbar: bool = True,
     args=(),
     **kwargs
-) -> List[Any]:
+) -> Iterable[Any]:
     """Execute func on each element in iterable on n_workers, ensuring order.
 
     Args:
@@ -74,7 +76,7 @@ def multiprocessing_imap(
         args: Additional positional arguments to pass to func.
         kwargs: Additional keyword arguments to pass to func.
 
-    Returns:
+    Yields:
         Results in same order as input iterable.
 
     Raises:
@@ -100,7 +102,7 @@ def multiprocessing_imap(
         stage = tqdm(stage, total=n_chunks)
 
     try:
-        return list(stage)
+        yield from stage
     except (Exception, KeyboardInterrupt):
         if pool:
             logger.debug("Terminating ProcessPool")

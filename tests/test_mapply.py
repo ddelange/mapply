@@ -18,12 +18,12 @@ def test_df_mapply():
 
     # same output along both axes
     pd.testing.assert_frame_equal(
-        df.apply(lambda x: x ** 2),
-        df.mapply(lambda x: x ** 2),
+        df.apply(lambda x: x**2),
+        df.mapply(lambda x: x**2),
     )
     pd.testing.assert_frame_equal(
-        df.mapply(lambda x: x ** 2, axis=0),
-        df.mapply(lambda x: x ** 2, axis=1),
+        df.mapply(lambda x: x**2, axis=0),
+        df.mapply(lambda x: x**2, axis=1),
     )
 
     # vectorized
@@ -46,15 +46,15 @@ def test_df_mapply():
     # max_chunks_per_worker=0
     mapply.init(progressbar=False, chunk_size=1, max_chunks_per_worker=0)
     pd.testing.assert_frame_equal(
-        df.apply(lambda x: x ** 2),
-        df.mapply(lambda x: x ** 2),
+        df.apply(lambda x: x**2),
+        df.mapply(lambda x: x**2),
     )
 
     # n_workers=1
     mapply.init(progressbar=False, chunk_size=1, n_workers=1)
     pd.testing.assert_frame_equal(
-        df.apply(lambda x: x ** 2),
-        df.mapply(lambda x: x ** 2),
+        df.apply(lambda x: x**2),
+        df.mapply(lambda x: x**2),
     )
 
     # concat for only one result
@@ -70,7 +70,7 @@ def test_series_mapply():
     # chunk_size>1
     mapply.init(progressbar=False, chunk_size=5)
 
-    fn = lambda x: x ** 2  # noqa:E731
+    fn = lambda x: x**2  # noqa:E731
     series = pd.Series(range(100))
 
     with pytest.raises(ValueError, match="Passing axis=1 is not allowed for Series"):

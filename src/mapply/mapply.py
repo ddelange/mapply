@@ -107,11 +107,13 @@ def mapply(
     if not isseries:
         kwargs["axis"] = axis
 
-    results = multiprocessing_imap(
-        partial(run_apply, func, args=args, **kwargs),
-        dfs,
-        n_workers=n_workers,
-        progressbar=progressbar,
+    results = list(
+        multiprocessing_imap(
+            partial(run_apply, func, args=args, **kwargs),
+            dfs,
+            n_workers=n_workers,
+            progressbar=progressbar,
+        )
     )
 
     if (
