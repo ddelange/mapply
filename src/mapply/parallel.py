@@ -20,7 +20,7 @@ Standalone usage:
 """
 import logging
 from functools import partial
-from typing import Any, Callable, Iterable, Optional
+from typing import Any, Callable, Iterable, Iterator, Optional
 
 import psutil
 from pathos.multiprocessing import ProcessPool
@@ -65,7 +65,7 @@ def multiprocessing_imap(
     progressbar: bool = True,
     args=(),
     **kwargs
-) -> Iterable[Any]:
+) -> Iterator[Any]:
     """Execute func on each element in iterable on n_workers, ensuring order.
 
     Args:
