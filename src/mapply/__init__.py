@@ -31,8 +31,6 @@ def init(
     max_chunks_per_worker: int = DEFAULT_MAX_CHUNKS_PER_WORKER,
     progressbar: bool = True,
     apply_name: str = "mapply",
-    map_name: str = "mmap",
-    applymap_name: str = "mapplymap",
 ):
     """Patch Pandas, adding multi-core methods to PandasObject.
 
@@ -48,19 +46,15 @@ def init(
             n_chunks determined by chunk_size if necessary. Set to 0 to skip this check.
         progressbar: Whether to wrap the chunks in a :meth:`tqdm.auto.tqdm`.
         apply_name: Method name for the patched apply function.
-        map_name: Method name for the patched map function.
-        applymap_name: Method name for the patched applymap function.
     """
     from pandas.core.base import PandasObject
 
-    setattr(
-        PandasObject,
-        apply_name,
-        partialmethod(
-            _mapply,
-            n_workers=n_workers,
-            chunk_size=chunk_size,
-            max_chunks_per_worker=max_chunks_per_worker,
-            progressbar=progressbar,
-        ),
+    apply = partialmethod(
+        _mapply,
+        n_workers=n_workers,
+        chunk_size=chunk_size,
+        max_chunks_per_worker=max_chunks_per_worker,
+        progressbar=progressbar,
     )
+
+    setattr(PandasObject, apply_name, apply)

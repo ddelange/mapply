@@ -7,7 +7,7 @@
 [![downloads](https://pepy.tech/badge/mapply)](https://pypistats.org/packages/mapply)
 [![black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
-[`mapply`](https://github.com/ddelange/mapply) provides sensible multi-core apply/map/applymap functions for Pandas.
+[`mapply`](https://github.com/ddelange/mapply) provides sensible multi-core apply function for Pandas.
 
 ### mapply vs. pandarallel vs. swifter
 
