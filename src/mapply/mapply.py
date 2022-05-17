@@ -117,10 +117,10 @@ def mapply(
     )
 
     if (
-        not isseries
-        and len(results) > 1
-        and results[0].index.equals(df_or_series.index)
+        isseries
+        or len(results) == 1
+        or len(results[0]) * len(results) in df_or_series.shape
     ):
-        return concat(results, axis=1, copy=False)
+        return concat(results, copy=False)
 
-    return concat(results, copy=False)
+    return concat(results, axis=1, copy=False)

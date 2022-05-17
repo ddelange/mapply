@@ -65,6 +65,13 @@ def test_df_mapply():
         df.mapply(sum, axis=1),
     )
 
+    # single row dataframe turns into multi row dataframe with same columns
+    mapply.init(progressbar=False, chunk_size=2, n_workers=2)
+    pd.testing.assert_frame_equal(
+        df.T.apply(lambda y: pd.Series(np.arange(10))),
+        df.T.mapply(lambda y: pd.Series(np.arange(10))),
+    )
+
 
 def test_series_mapply():
     # chunk_size>1
