@@ -27,7 +27,7 @@ setup(
     description="Sensible multi-core apply function for Pandas",
     long_description=read_readme(readme_path),
     long_description_content_type="text/markdown",
-    setup_requires=["setuptools_scm"],
+    setup_requires=["setuptools_scm<7"],
     install_requires=read_requirements(requirements_path),
     use_scm_version={"write_to": "src/mapply/_version.py"},
     package_dir={"": "src"},
