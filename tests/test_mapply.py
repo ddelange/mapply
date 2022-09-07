@@ -57,6 +57,14 @@ def test_df_mapply():
         df.mapply(lambda x: x**2),
     )
 
+    # not all result chunks have equal size (trailing chunk)
+    mapply.init(progressbar=False, chunk_size=100, n_workers=2)
+    df = pd.DataFrame(np.random.randint(2, size=(5, 201)))
+    pd.testing.assert_series_equal(
+        df.apply(np.var),
+        df.mapply(np.var),
+    )
+
     # concat for only one result
     mapply.init(progressbar=False, chunk_size=100, n_workers=2)
     df = pd.DataFrame(list(range(1, 200)))  # (199, 1)
