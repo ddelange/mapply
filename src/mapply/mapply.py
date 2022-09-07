@@ -116,11 +116,7 @@ def mapply(
         )
     )
 
-    if (
-        isseries
-        or len(results) == 1
-        or len(results[0]) * len(results) in df_or_series.shape
-    ):
+    if isseries or len(results) == 1 or sum(map(len, results)) in df_or_series.shape:
         return concat(results, copy=False)
 
     return concat(results, axis=1, copy=False)
