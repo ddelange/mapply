@@ -16,8 +16,7 @@ showcov:
 .PHONY: install
 ## Install this repo, plus dev requirements, in editable mode
 install:
-	pip install -r requirements/ci.txt -r requirements/docs.txt
-	pip install -e .
+	pip install -r requirements/ci.txt -r requirements/docs.txt -e .
 	pre-commit install
 
 .PHONY: builddocs

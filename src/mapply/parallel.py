@@ -1,4 +1,4 @@
-"""Submodule containing code to distribute computation over multiple processes using :class:`multiprocess.pool.Pool`.
+"""Submodule containing code to distribute computation over multiple processes using :class:`pathos.multiprocessing.ProcessPool`.
 
 Standalone usage:
 ::
@@ -24,7 +24,7 @@ from functools import partial
 from typing import Any, Callable, Iterable, Iterator, Optional
 
 import psutil
-from multiprocess.pool import Pool
+from pathos.multiprocessing import ProcessPool
 from tqdm.auto import tqdm as _tqdm
 
 logger = logging.getLogger(__name__)
@@ -38,7 +38,7 @@ def sensible_cpu_count() -> int:
 
 
 N_CORES = sensible_cpu_count()
-MAX_TASKS_PER_CHILD = os.environ.get("MAPPLY_MAX_TASKS_PER_CHILD", 4)
+MAX_TASKS_PER_CHILD = int(os.environ.get("MAPPLY_MAX_TASKS_PER_CHILD", 4))
 
 
 def _choose_n_workers(n_chunks: Optional[int], n_workers: int) -> int:
@@ -80,6 +80,10 @@ def multiprocessing_imap(
 
     Yields:
         Results in same order as input iterable.
+
+    Raises:
+        Exception: Any error occurred during computation (will terminate the pool early).
+        KeyboardInterrupt: Any KeyboardInterrupt sent by the user (will terminate the pool early).
     """
     n_chunks: Optional[int] = tqdm(iterable, disable=True).__len__()  # doesn't exhaust
     func = partial(func, *args, **kwargs)
@@ -92,7 +96,7 @@ def multiprocessing_imap(
         stage = map(func, iterable)
     else:
         logger.debug("Starting ProcessPool with %d workers", n_workers)
-        pool = Pool(n_workers, maxtasksperchild=MAX_TASKS_PER_CHILD)
+        pool = ProcessPool(n_workers, maxtasksperchild=MAX_TASKS_PER_CHILD)
 
         stage = pool.imap(func, iterable)
 
@@ -101,7 +105,12 @@ def multiprocessing_imap(
 
     try:
         yield from stage
-    finally:
+    except (Exception, KeyboardInterrupt):
         if pool:
             logger.debug("Terminating ProcessPool")
             pool.terminate()
+        raise
+    finally:
+        if pool:
+            logger.debug("Closing ProcessPool")
+            pool.clear()
