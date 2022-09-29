@@ -29,10 +29,12 @@ def _choose_n_chunks(
     """Choose final amount of chunks to be sent to the ProcessPool."""
     # no sense running parallel if data is too small
     n_chunks = int(shape[axis] / chunk_size)
+    if n_workers < 1:
+        n_workers = N_CORES
 
     if max_chunks_per_worker:
         # no sense making too many chunks
-        n_chunks = min(n_chunks, max_chunks_per_worker * N_CORES)
+        n_chunks = min(n_chunks, max_chunks_per_worker * n_workers)
     if n_chunks < 1 or n_workers == 1 or N_CORES == 1:
         # no sense running parallel
         n_chunks = 1
