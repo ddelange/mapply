@@ -181,6 +181,6 @@ def linkcode_resolve(  # noqa:CCR001
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable", None),
-    "multiprocess": ("https://multiprocess.readthedocs.io/en/latest/", None),
+    "pathos": ("https://pathos.readthedocs.io/en/latest", None),
     # "tqdm": ("https://tqdm.github.io/docs/tqdm", None),  # mkdocs not working
 }
