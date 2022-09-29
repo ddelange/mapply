@@ -19,6 +19,7 @@ Standalone usage:
     )
 """
 import logging
+import os
 from functools import partial
 from typing import Any, Callable, Iterable, Iterator, Optional
 
@@ -37,6 +38,7 @@ def sensible_cpu_count() -> int:
 
 
 N_CORES = sensible_cpu_count()
+MAX_TASKS_PER_CHILD = int(os.environ.get("MAPPLY_MAX_TASKS_PER_CHILD", 4))
 
 
 def _choose_n_workers(n_chunks: Optional[int], n_workers: int) -> int:
@@ -94,7 +96,7 @@ def multiprocessing_imap(
         stage = map(func, iterable)
     else:
         logger.debug("Starting ProcessPool with %d workers", n_workers)
-        pool = ProcessPool(n_workers)
+        pool = ProcessPool(n_workers, maxtasksperchild=MAX_TASKS_PER_CHILD)
 
         stage = pool.imap(func, iterable)
 
