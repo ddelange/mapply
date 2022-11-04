@@ -48,7 +48,7 @@ repos:
         ]
 
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.3.0
+    rev: v4.1.0  # last version to support py3.6
     hooks:
     -   id: mixed-line-ending
         args: ['--fix=lf']
