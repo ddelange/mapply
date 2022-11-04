@@ -33,7 +33,7 @@ repos:
             'darglint~=1.8.1',
             'flake8-absolute-import~=1.0',
             'flake8-blind-except~=0.2.1',
-            'flake8-builtins~=2.0.1',
+            'flake8-builtins~=2.0',  # last version to support py3.6
             'flake8-cognitive-complexity==0.1.0',
             'flake8-comprehensions~=3.10.0',
             'flake8-docstrings~=1.6.0',
