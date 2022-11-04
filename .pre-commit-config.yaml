@@ -7,7 +7,7 @@ repos:
         exclude: .*/tests/.*
 
 -   repo: https://github.com/psf/black
-    rev: 22.10.0
+    rev: 22.8.0 # last version to support py3.6 ref https://github.com/psf/black/issues/3169#issuecomment-1303315799
     hooks:
     -   id: black
 
