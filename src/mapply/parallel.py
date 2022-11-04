@@ -29,7 +29,7 @@ from tqdm.auto import tqdm as _tqdm
 
 logger = logging.getLogger(__name__)
 
-tqdm = partial(_tqdm, dynamic_ncols=True)
+tqdm = partial(_tqdm, dynamic_ncols=True, smoothing=0.042, mininterval=0.42)
 
 
 def sensible_cpu_count() -> int:
