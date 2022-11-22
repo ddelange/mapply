@@ -50,6 +50,7 @@ jobs:
         make install
 
     - name: Lint
+      if: matrix.python-version == 3.11
       run: make lint
 
     - name: Test
