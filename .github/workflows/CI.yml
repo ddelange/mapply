@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10', '3.11']
 
     steps:
     - uses: actions/checkout@v2
@@ -28,7 +28,7 @@ jobs:
         fetch-depth: 0
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -44,18 +44,13 @@ jobs:
         path: ~/.cache/pre-commit
         key: ${{ runner.os }}-pre-commit-${{ matrix.python-version }}-${{ hashFiles('**/requirements/ci.txt') }}-${{ hashFiles('.pre-commit-config.yaml') }}
 
-    - name: Install (ci)
+    - name: Install
       run: |
-        pip install --upgrade pip setuptools wheel
-        pip install -r requirements/ci.txt
-        pip install -r requirements/docs.txt
-        pip install codecov
+        pip install -U pip setuptools wheel codecov
+        make install
 
     - name: Lint
       run: make lint
-
-    - name: Install (self)
-      run: pip install .
 
     - name: Test
       run: make test
