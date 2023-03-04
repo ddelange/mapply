@@ -11,7 +11,7 @@
 
 ### mapply vs. pandarallel vs. swifter
 
-Where [`pandarallel`](https://github.com/nalepae/pandarallel) only requires [`dill`](https://github.com/uqfoundation/dill) (and therefore has to rely on in-house multiprocessing and progressbars), [`swifter`](https://github.com/jmcarpenter2/swifter) relies on the heavy [`dask`](https://github.com/dask/dask) framework, converting to Dask DataFrames and back. In an attempt to find the golden mean, `mapply` is highly customizable and remains lightweight, leveraging the powerful [`pathos`](https://github.com/uqfoundation/pathos) framework, which shadows Python's built-in multiprocessing module using `dill` for universal pickling.
+Where [`pandarallel`](https://pypi.org/project/pandarallel) relies on in-house multiprocessing and progressbars, and hard-codes `max_chunks_per_worker=1` (which will cause idle CPUs when one chunk happens to be more expensive than the others), [`swifter`](https://pypi.org/project/swifter) relies on the heavy [`dask`](https://pypi.org/project/dask) framework for multiprocessing (converting to Dask DataFrames and back) and also hard-codes chunking behaviour at a 'smart default'. In an attempt to find the golden mean, `mapply` is highly customizable and remains lightweight, using [`tqdm`](https://pypi.org/project/tqdm) for progressbars and leveraging the powerful [`pathos`](https://pypi.org/project/pathos) framework, which shadows Python's built-in multiprocessing module using [`dill`](https://pypi.org/project/dill) for universal pickling.
 
 
 ## Installation
