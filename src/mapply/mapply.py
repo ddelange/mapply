@@ -13,6 +13,7 @@ Standalone usage (without init):
 from functools import partial
 from typing import Any, Callable, Tuple, Union
 
+from mapply._groupby import run_groupwise_apply
 from mapply.parallel import N_CORES, multiprocessing_imap
 
 DEFAULT_CHUNK_SIZE = 100
@@ -57,7 +58,7 @@ def mapply(
     """Run apply on n_workers. Split in chunks if sensible, gather results, and concat.
 
     When using :meth:`mapply.init`, the signature of this method will behave the same as
-    :meth:`pandas.DataFrame.apply` or :meth:`pandas.Series.apply`.
+    :meth:`pandas.DataFrame.apply`/:meth:`pandas.Series.apply`/:meth:`pandas.core.groupby.GroupBy.apply`.
 
     Args:
         df_or_series: Argument reserved to the class instance, a.k.a. 'self'.
@@ -82,6 +83,17 @@ def mapply(
     """
     from numpy import array_split
     from pandas import Series, concat
+    from pandas.core.groupby import GroupBy
+
+    if isinstance(df_or_series, GroupBy):
+        return run_groupwise_apply(
+            df_or_series,
+            func,
+            n_workers=n_workers,
+            progressbar=progressbar,
+            args=args,
+            **kwargs,
+        )
 
     if isinstance(axis, str):
         axis = ["index", "columns"].index(axis)
