@@ -19,6 +19,11 @@ def test_df_mapply():
         df.groupby("E").apply(sum),
         df.groupby("E").mapply(sum),
     )
+    # empty GroupBy
+    pd.testing.assert_frame_equal(
+        df.iloc[:0].groupby("E").apply(sum),
+        df.iloc[:0].groupby("E").mapply(sum),
+    )
 
     # axis as positional arg
     df["totals"] = df.mapply(lambda x: x.A + x.B, "columns")

@@ -53,6 +53,11 @@ jobs:
       if: matrix.python-version == 3.11
       run: make lint
 
+    # remove when 2.1.0 is released (https://github.com/pandas-dev/pandas/commit/dc947a459b094ccd087557db355cfde5ed97b454)
+    - name: Test against pandas master
+      if: matrix.python-version == 3.11
+      run: pip install git+https://github.com/pandas-dev/pandas
+
     - name: Test
       run: make test
 
