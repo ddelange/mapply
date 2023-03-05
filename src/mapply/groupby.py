@@ -1,10 +1,13 @@
+import logging
 from types import MethodType
 from typing import Any, Callable
 
 from mapply.parallel import multiprocessing_imap
 
+logger = logging.getLogger(__name__)
 
-def run_groupwise_apply(
+
+def run_groupwise_apply(  # noqa:CCR001
     df_or_series: Any,
     func: Callable,
     *,
@@ -14,6 +17,7 @@ def run_groupwise_apply(
     **kwargs,
 ):
     """Patch GroupBy.grouper.apply, applying func to each group in parallel."""
+    from pandas import __version__
 
     def apply(self, f, data, axis=0):
         # patching https://github.com/pandas-dev/pandas/blob/v1.5.3/pandas/core/groupby/ops.py#L823
@@ -69,8 +73,13 @@ def run_groupwise_apply(
 
         return result_values, mutated
 
-    # https://github.com/pandas-dev/pandas/commit/dc947a459b094ccd087557db355cfde5ed97b454
-    attr = "apply" if hasattr(df_or_series.grouper, "apply") else "apply_groupwise"
+    if __version__.split(".") < ["1", "5"]:  # <1.4.0
+        logger.warning("GroupBy.mapply only works for pandas>=1.5.0. Using single CPU.")
+        return df_or_series.apply(func, *args, **kwargs)
+    elif hasattr(df_or_series.grouper, "apply"):  # <2.1.0
+        attr = "apply"
+    else:  # https://github.com/pandas-dev/pandas/commit/dc947a459b094ccd087557db355cfde5ed97b454
+        attr = "apply_groupwise"
     # overwrite apply method and restore after execution
     original_apply = getattr(df_or_series.grouper, attr)
     setattr(df_or_series.grouper, attr, MethodType(apply, df_or_series.grouper))
