@@ -13,6 +13,13 @@ def test_df_mapply():
         np.random.randint(0, 300, size=(int(2000), 4)), columns=list("ABCD")
     )
 
+    # test GroupBy
+    df["E"] = [0] * (len(df) // 2) + [1] * (len(df) - len(df) // 2)
+    pd.testing.assert_frame_equal(
+        df.groupby("E").apply(sum),
+        df.groupby("E").mapply(sum),
+    )
+
     # axis as positional arg
     df["totals"] = df.mapply(lambda x: x.A + x.B, "columns")
 
