@@ -78,7 +78,8 @@ def run_groupwise_apply(  # noqa:CCR001
         return df_or_series.apply(func, *args, **kwargs)
     elif hasattr(df_or_series.grouper, "apply"):  # <2.1.0
         attr = "apply"
-    else:  # https://github.com/pandas-dev/pandas/commit/dc947a459b094ccd087557db355cfde5ed97b454
+    else:  # pragma: no cover
+        # 2.1.0 is unreleased https://github.com/pandas-dev/pandas/commit/dc947a459b094ccd087557db355cfde5ed97b454
         attr = "apply_groupwise"
     # overwrite apply method and restore after execution
     original_apply = getattr(df_or_series.grouper, attr)
