@@ -4,7 +4,7 @@
 [![codecov](https://img.shields.io/codecov/c/github/ddelange/mapply/master?logo=codecov&logoColor=white)](https://codecov.io/gh/ddelange/mapply)
 [![pypi Version](https://img.shields.io/pypi/v/mapply.svg?logo=pypi&logoColor=white)](https://pypi.org/project/mapply/)
 [![python](https://img.shields.io/pypi/pyversions/mapply.svg?logo=python&logoColor=white)](https://pypi.org/project/mapply/)
-[![downloads](https://pepy.tech/badge/mapply)](https://pypistats.org/packages/mapply)
+[![downloads](https://static.pepy.tech/badge/mapply)](https://pypistats.org/packages/mapply)
 [![black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
 [`mapply`](https://github.com/ddelange/mapply) provides a sensible multi-core apply function for Pandas.
