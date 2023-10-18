@@ -1,17 +1,15 @@
+# ruff: noqa
+import mapply
 import numpy as np
 import pandas as pd
 import pytest
-
-import mapply
 
 
 def test_df_mapply():
     mapply.init(progressbar=False, chunk_size=1)
 
     np.random.seed(1)
-    df = pd.DataFrame(
-        np.random.randint(0, 300, size=(int(2000), 4)), columns=list("ABCD")
-    )
+    df = pd.DataFrame(np.random.randint(0, 300, size=(2000, 4)), columns=list("ABCD"))
 
     # test GroupBy
     df["E"] = [0] * (len(df) // 2) + [1] * (len(df) - len(df) // 2)
@@ -49,7 +47,7 @@ def test_df_mapply():
     )
 
     # result_type kwarg
-    fn = lambda x: [x.A, x.B]  # noqa:E731
+    fn = lambda x: [x.A, x.B]
     pd.testing.assert_frame_equal(
         df.apply(fn, axis=1, result_type="expand"),
         df.mapply(fn, axis=1, result_type="expand"),
@@ -97,7 +95,7 @@ def test_series_mapply():
     # chunk_size>1
     mapply.init(progressbar=False, chunk_size=5)
 
-    fn = lambda x: x**2  # noqa:E731
+    fn = lambda x: x**2
     series = pd.Series(range(100))
 
     with pytest.raises(ValueError, match="Passing axis=1 is not allowed for Series"):

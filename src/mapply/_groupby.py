@@ -1,20 +1,21 @@
+# ruff: noqa: ERA001
 import logging
 from types import MethodType
-from typing import Any, Callable
+from typing import Any, Callable, Tuple
 
 from mapply.parallel import multiprocessing_imap, tqdm
 
 logger = logging.getLogger(__name__)
 
 
-def run_groupwise_apply(  # noqa:CCR001
+def run_groupwise_apply(
     df_or_series: Any,
     func: Callable,
     *,
     n_workers: int,
     progressbar: bool,
-    args=(),
-    **kwargs,
+    args: Tuple[Any, ...] = (),  # noqa: FA100
+    **kwargs: Any,
 ):
     """Patch GroupBy.grouper.apply, applying func to each group in parallel."""
     from pandas import __version__
@@ -47,7 +48,10 @@ def run_groupwise_apply(  # noqa:CCR001
         splitter_gen = tqdm(splitter_gen, disable=True, total=splitter.ngroups)
         zipped = zip(
             multiprocessing_imap(
-                f, splitter_gen, n_workers=n_workers, progressbar=progressbar
+                f,
+                splitter_gen,
+                n_workers=n_workers,
+                progressbar=progressbar,
             ),
             group_axes_list,
         )
@@ -82,14 +86,12 @@ def run_groupwise_apply(  # noqa:CCR001
 
         return result_values, mutated
 
-    if __version__.split(".") < ["1", "5"]:  # <1.4.0
+    if __version__.split(".") < ["1", "5"]:  # pragma: no cover
         logger.warning("GroupBy.mapply only works for pandas>=1.5.0. Using single CPU.")
         return df_or_series.apply(func, *args, **kwargs)
-    elif hasattr(df_or_series.grouper, "apply"):  # <2.1.0
-        attr = "apply"
-    else:  # pragma: no cover
-        # 2.1.0 is unreleased https://github.com/pandas-dev/pandas/commit/dc947a459b094ccd087557db355cfde5ed97b454
-        attr = "apply_groupwise"
+
+    # 2.1.0 renamed to apply_groupwise ref https://github.com/pandas-dev/pandas/commit/dc947a459b094ccd087557db355cfde5ed97b454
+    attr = "apply" if hasattr(df_or_series.grouper, "apply") else "apply_groupwise"
     # overwrite apply method and restore after execution
     original_apply = getattr(df_or_series.grouper, attr)
     setattr(df_or_series.grouper, attr, MethodType(apply, df_or_series.grouper))

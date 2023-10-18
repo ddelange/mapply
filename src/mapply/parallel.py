@@ -18,10 +18,12 @@ Standalone usage:
         )
     )
 """
+from __future__ import annotations
+
 import logging
 import os
 from functools import partial
-from typing import Any, Callable, Iterable, Iterator, Optional
+from typing import Any, Callable, Iterable, Iterator
 
 import psutil
 from pathos.multiprocessing import ProcessPool
@@ -41,7 +43,7 @@ N_CORES = sensible_cpu_count()
 MAX_TASKS_PER_CHILD = int(os.environ.get("MAPPLY_MAX_TASKS_PER_CHILD", 4))
 
 
-def _choose_n_workers(n_chunks: Optional[int], n_workers: int) -> int:
+def _choose_n_workers(n_chunks: int | None, n_workers: int) -> int:
     """Choose final amount of workers to be spawned for received input."""
     if n_workers < 1:
         n_workers = N_CORES
@@ -65,8 +67,8 @@ def multiprocessing_imap(
     *,
     n_workers: int = -1,
     progressbar: bool = True,
-    args=(),
-    **kwargs
+    args: tuple[Any, ...] = (),
+    **kwargs: Any,
 ) -> Iterator[Any]:
     """Execute func on each element in iterable on n_workers, ensuring order.
 
@@ -76,7 +78,7 @@ def multiprocessing_imap(
         n_workers: Amount of workers (processes) to spawn.
         progressbar: Whether to wrap the chunks in a tqdm.auto.tqdm.
         args: Additional positional arguments to pass to func.
-        kwargs: Additional keyword arguments to pass to func.
+        **kwargs: Additional keyword arguments to pass to func.
 
     Yields:
         Results in same order as input iterable.
@@ -85,7 +87,7 @@ def multiprocessing_imap(
         Exception: Any error occurred during computation (will terminate the pool early).
         KeyboardInterrupt: Any KeyboardInterrupt sent by the user (will terminate the pool early).
     """
-    n_chunks: Optional[int] = tqdm(iterable, disable=True).__len__()  # doesn't exhaust
+    n_chunks: int | None = tqdm(iterable, disable=True).__len__()  # doesn't exhaust
     func = partial(func, *args, **kwargs)
 
     n_workers = _choose_n_workers(n_chunks, n_workers)

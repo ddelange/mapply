@@ -10,8 +10,10 @@ Standalone usage (without init):
 
     df["squared"] = mapply(df.A, lambda x: x ** 2, progressbar=False)
 """
+from __future__ import annotations
+
 from functools import partial
-from typing import Any, Callable, Tuple, Union
+from typing import Any, Callable
 
 from mapply._groupby import run_groupwise_apply
 from mapply.parallel import N_CORES, multiprocessing_imap
@@ -21,7 +23,7 @@ DEFAULT_MAX_CHUNKS_PER_WORKER = 8
 
 
 def _choose_n_chunks(
-    shape: Tuple[int, ...],
+    shape: tuple[int, ...],
     axis: int,
     n_workers: int,
     chunk_size: int,
@@ -43,17 +45,17 @@ def _choose_n_chunks(
     return n_chunks
 
 
-def mapply(
+def mapply(  # noqa: PLR0913
     df_or_series: Any,
     func: Callable,
-    axis: Union[int, str] = 0,
+    axis: int | str = 0,
     *,
     n_workers: int = -1,
     chunk_size: int = DEFAULT_CHUNK_SIZE,
     max_chunks_per_worker: int = DEFAULT_MAX_CHUNKS_PER_WORKER,
     progressbar: bool = True,
-    args=(),
-    **kwargs
+    args: tuple[Any, ...] = (),
+    **kwargs: Any,
 ) -> Any:
     """Run apply on n_workers. Split in chunks if sensible, gather results, and concat.
 
@@ -73,7 +75,7 @@ def mapply(
             n_chunks determined by chunk_size if necessary. Set to 0 to skip this check.
         progressbar: Whether to wrap the chunks in a :meth:`tqdm.auto.tqdm`.
         args: Additional positional arguments to pass to func.
-        kwargs: Additional keyword arguments to pass to apply/func.
+        **kwargs: Additional keyword arguments to pass to apply/func.
 
     Returns:
         Series or DataFrame resulting from applying func along given axis.
@@ -101,7 +103,8 @@ def mapply(
     isseries = int(isinstance(df_or_series, Series))
 
     if isseries and axis == 1:
-        raise ValueError("Passing axis=1 is not allowed for Series")
+        msg = "Passing axis=1 is not allowed for Series"
+        raise ValueError(msg)
 
     opposite_axis = 1 - (isseries or axis)
 
@@ -127,7 +130,7 @@ def mapply(
             dfs,
             n_workers=n_workers,
             progressbar=progressbar,
-        )
+        ),
     )
 
     if isseries or len(results) == 1 or sum(map(len, results)) in df_or_series.shape:
