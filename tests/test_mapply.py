@@ -1,8 +1,8 @@
+# ruff: noqa
+import mapply
 import numpy as np
 import pandas as pd
 import pytest
-
-import mapply
 
 
 def test_df_mapply():
@@ -10,7 +10,8 @@ def test_df_mapply():
 
     np.random.seed(1)
     df = pd.DataFrame(
-        np.random.randint(0, 300, size=(int(2000), 4)), columns=list("ABCD")
+        np.random.randint(0, 300, size=(2000, 4)),
+        columns=list("ABCD"),
     )
 
     # test GroupBy

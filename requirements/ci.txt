@@ -1,5 +1,5 @@
 detect-secrets~=0.14.2
-mypy~=0.782
+mypy~=1.6
 pre-commit~=2.17
 pytest-cov~=2.10.1
 pytest-env~=0.6.2

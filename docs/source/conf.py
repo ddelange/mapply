@@ -10,13 +10,14 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
+# ruff: noqa
+
 import inspect
 import sys
 from pathlib import Path
 
-from sphinx.ext import apidoc
-
 from mapply import __version__
+from sphinx.ext import apidoc
 
 current_dir = Path(__file__).parent.absolute()
 base_dir = current_dir.parents[1]
@@ -112,7 +113,7 @@ def setup(app):
 # -- Options for sphinx.ext.linkcode: [source] links -------------------------
 
 
-def linkcode_resolve(  # noqa:CCR001
+def linkcode_resolve(
     domain,
     info,
     blob_url=f"{project_url.rstrip('/')}/blob",
@@ -160,11 +161,11 @@ def linkcode_resolve(  # noqa:CCR001
         # site-packages
         if "site-packages/" not in sourcefile:
             raise RuntimeError(
-                "Expected a pip install -e, or install to site-packages"
+                "Expected a pip install -e, or install to site-packages",
             ) from exc
 
         relsourcefile = (code_dir / sourcefile.split("site-packages/")[-1]).relative_to(
-            base_dir
+            base_dir,
         )
 
     if "dev" in release:

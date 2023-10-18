@@ -8,7 +8,7 @@ repos:
 
 -   repo: https://github.com/psf/black
     # when updating this version, also update blacken-docs hook below
-    rev: 23.1.0
+    rev: 23.10.0
     hooks:
     -   id: black
 
@@ -16,12 +16,7 @@ repos:
     rev: 1.13.0
     hooks:
     -   id: blacken-docs
-        additional_dependencies: ['black==23.1.0']
-
--   repo: https://github.com/timothycrosley/isort
-    rev: 5.12.0
-    hooks:
-    -   id: isort
+        additional_dependencies: ['black==23.10.0']
 
 -   repo: local
     hooks:
@@ -32,27 +27,17 @@ repos:
         types: [python]
         pass_filenames: false
 
--   repo: https://github.com/PyCQA/flake8
-    rev: 6.0.0
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.0
     hooks:
-    -   id: flake8
-        additional_dependencies: [
-            'darglint~=1.8.1',
-            'flake8-absolute-import~=1.0',
-            'flake8-blind-except~=0.2.0',
-            'flake8-builtins~=2.1',
-            'flake8-cognitive-complexity==0.1.0',
-            'flake8-comprehensions~=3.2',
-            'flake8-docstrings~=1.5',
-            'flake8-logging-format~=0.9',
-            'flake8-mutable~=1.2.0',
-            'flake8-print~=5.0',
-            'flake8-printf-formatting~=1.1.0',
-            'flake8-pytest-style~=1.7',
-            'flake8-quotes~=3.2',
-            'flake8-tuple~=0.4.1',
-            'pep8-naming~=0.11'
-        ]
+    -   id: ruff
+        args: [--fix, --exit-non-zero-on-fix, --select=ALL, '--ignore=D407,E501,ANN,TRY003,D203,D213']  # ignores: D407 (we have google style docstrings), E501 (we have black), ANN (we have mypy), TRY003 (there is EM102), D203 (there is D211), D213 (there is D212)
+
+-   repo: https://github.com/jsh9/pydoclint
+    rev: 0.3.4
+    hooks:
+    -   id: pydoclint
+        args: [--style=google, --arg-type-hints-in-docstring=False, --check-return-types=False, --check-yield-types=False]
 
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0

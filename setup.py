@@ -1,31 +1,31 @@
-from os import path
+# ruff: noqa: D100
+from __future__ import annotations
+
+from pathlib import Path
 
 from setuptools import find_packages, setup
 
-here = path.abspath(path.dirname(__file__))
+here = Path(__file__).parent.absolute()
 
-requirements_path = path.join(here, "requirements", "prod.txt")
+requirements_path = here / "requirements" / "prod.txt"
 
-readme_path = path.join(here, "README.md")
+readme_path = here / "README.md"
 
 
-def read_requirements(path):
+def read_requirements(path: Path) -> list[str]:
+    """Parse a requirements file much like pip does."""
     try:
-        with open(path, mode="rt", encoding="utf-8") as fp:
+        with path.open() as fp:
             return list(filter(None, (line.split("#")[0].strip() for line in fp)))
-    except IndexError:
-        raise RuntimeError("{} is broken".format(path))
-
-
-def read_readme(path):
-    with open(path, mode="rt", encoding="utf-8") as fp:
-        return fp.read()
+    except IndexError as exc:
+        msg = f"{path} is broken"
+        raise RuntimeError(msg) from exc
 
 
 setup(
     name="mapply",
     description="Sensible multi-core apply function for Pandas",
-    long_description=read_readme(readme_path),
+    long_description=readme_path.read_text(),
     long_description_content_type="text/markdown",
     setup_requires=["setuptools_scm<7"],
     install_requires=read_requirements(requirements_path),
