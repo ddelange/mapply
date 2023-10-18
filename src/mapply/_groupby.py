@@ -86,7 +86,7 @@ def run_groupwise_apply(
 
         return result_values, mutated
 
-    if __version__.split(".") < ["1", "5"]:  # <1.4.0
+    if __version__.split(".") < ["1", "5"]:  # pragma: no cover
         logger.warning("GroupBy.mapply only works for pandas>=1.5.0. Using single CPU.")
         return df_or_series.apply(func, *args, **kwargs)
 

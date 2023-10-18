@@ -6,6 +6,18 @@ repos:
         args: ['--baseline', '.secrets.baseline']
         exclude: .*/tests/.*
 
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.0
+    hooks:
+    -   id: ruff
+        args: [--fix, --exit-non-zero-on-fix, --select=ALL, '--ignore=D407,E501,ANN,TRY003,D203,D213']  # ignores: D407 (we have google style docstrings), E501 (we have black), ANN (we have mypy), TRY003 (there is EM102), D203 (there is D211), D213 (there is D212)
+
+-   repo: https://github.com/jsh9/pydoclint
+    rev: 0.3.4
+    hooks:
+    -   id: pydoclint
+        args: [--style=google, --arg-type-hints-in-docstring=False, --check-return-types=False, --check-yield-types=False]
+
 -   repo: https://github.com/psf/black
     # when updating this version, also update blacken-docs hook below
     rev: 23.10.0
@@ -26,18 +38,6 @@ repos:
         language: system
         types: [python]
         pass_filenames: false
-
--   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.0
-    hooks:
-    -   id: ruff
-        args: [--fix, --exit-non-zero-on-fix, --select=ALL, '--ignore=D407,E501,ANN,TRY003,D203,D213']  # ignores: D407 (we have google style docstrings), E501 (we have black), ANN (we have mypy), TRY003 (there is EM102), D203 (there is D211), D213 (there is D212)
-
--   repo: https://github.com/jsh9/pydoclint
-    rev: 0.3.4
-    hooks:
-    -   id: pydoclint
-        args: [--style=google, --arg-type-hints-in-docstring=False, --check-return-types=False, --check-yield-types=False]
 
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
@@ -60,3 +60,4 @@ repos:
       - id: interrogate
         pass_filenames: false
         args: [-c, setup.cfg]
+        additional_dependencies: ['setuptools']  # setuptools for pkg_resources for python 3.12
