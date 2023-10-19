@@ -17,11 +17,15 @@ Example usage:
 
     df["squared"] = df.A.mapply(lambda x: x ** 2)
 """
+import contextlib
 from functools import partialmethod
+from importlib.metadata import PackageNotFoundError, version
 
-from mapply._version import version as __version__  # noqa:F401
 from mapply.mapply import DEFAULT_CHUNK_SIZE, DEFAULT_MAX_CHUNKS_PER_WORKER
 from mapply.mapply import mapply as _mapply
+
+with contextlib.suppress(PackageNotFoundError):
+    __version__ = version("mapply")
 
 
 def init(
