@@ -24,14 +24,14 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install -U pip setuptools wheel twine
+        pip install -U pip setuptools wheel twine build
 
     - name: Build and publish
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
-        python setup.py sdist bdist_wheel
+        python -m build
         twine upload dist/*
 
     - uses: apexskier/github-release-commenter@v1
