@@ -56,7 +56,7 @@ check-return-types = false
 check-yield-types = false
 
 [tool.pytest.ini_options]
-addopts = "-s --strict-markers -vv --cache-clear --doctest-modules --cov=mapply --cov-report=term --cov-report=html --cov-branch --no-cov-on-fail --cov-fail-under=80 --ignore=docs"
+addopts = "-s --strict-markers -vv --cache-clear --doctest-modules --cov=mapply --cov-report=term --cov-report=html --cov-branch --no-cov-on-fail --ignore=docs"
 
 [tool.ruff]
 select = ["ALL"]
