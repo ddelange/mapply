@@ -1,4 +1,3 @@
-# ruff: noqa
 import mapply
 import numpy as np
 import pandas as pd
@@ -6,10 +5,14 @@ import pytest
 
 
 def test_df_mapply():
+    """Assert DataFrame behaviour is equivalent."""
     mapply.init(progressbar=False, chunk_size=1)
 
-    np.random.seed(1)
-    df = pd.DataFrame(np.random.randint(0, 300, size=(2000, 4)), columns=list("ABCD"))
+    np.random.seed(1)  # noqa: NPY002
+    df = pd.DataFrame(  # noqa: PD901
+        np.random.randint(0, 300, size=(2000, 4)),  # noqa: NPY002
+        columns=list("ABCD"),
+    )
 
     # test GroupBy
     df["E"] = [0] * (len(df) // 2) + [1] * (len(df) - len(df) // 2)
@@ -47,20 +50,22 @@ def test_df_mapply():
     )
 
     # result_type kwarg
-    fn = lambda x: [x.A, x.B]
+    def fn(x):
+        return [x.A, x.B]
+
     pd.testing.assert_frame_equal(
         df.apply(fn, axis=1, result_type="expand"),
         df.mapply(fn, axis=1, result_type="expand"),
     )
 
-    # max_chunks_per_worker=0
+    # max_chunks_per_worker=0  # noqa: ERA001
     mapply.init(progressbar=False, chunk_size=1, max_chunks_per_worker=0)
     pd.testing.assert_frame_equal(
         df.apply(lambda x: x**2),
         df.mapply(lambda x: x**2),
     )
 
-    # n_workers=1
+    # n_workers=1  # noqa: ERA001
     mapply.init(progressbar=False, chunk_size=1, n_workers=1)
     pd.testing.assert_frame_equal(
         df.apply(lambda x: x**2),
@@ -69,7 +74,7 @@ def test_df_mapply():
 
     # not all result chunks have equal size (trailing chunk)
     mapply.init(progressbar=False, chunk_size=100, n_workers=2)
-    df = pd.DataFrame(np.random.randint(2, size=(5, 201)))
+    df = pd.DataFrame(np.random.randint(2, size=(5, 201)))  # noqa: NPY002, PD901
     pd.testing.assert_series_equal(
         df.apply(np.var),
         df.mapply(np.var),
@@ -77,7 +82,7 @@ def test_df_mapply():
 
     # concat for only one result
     mapply.init(progressbar=False, chunk_size=100, n_workers=2)
-    df = pd.DataFrame(list(range(1, 200)))  # (199, 1)
+    df = pd.DataFrame(list(range(1, 200)))  # (199, 1)  # noqa: PD901
     pd.testing.assert_series_equal(
         df.apply(sum, axis=1),
         df.mapply(sum, axis=1),
@@ -86,22 +91,25 @@ def test_df_mapply():
     # single row dataframe turns into multi row dataframe with same columns
     mapply.init(progressbar=False, chunk_size=2, n_workers=2)
     pd.testing.assert_frame_equal(
-        df.T.apply(lambda y: pd.Series(np.arange(10))),
-        df.T.mapply(lambda y: pd.Series(np.arange(10))),
+        df.T.apply(lambda y: pd.Series(np.arange(10))),  # noqa: ARG005
+        df.T.mapply(lambda y: pd.Series(np.arange(10))),  # noqa: ARG005
     )
 
 
 def test_series_mapply():
+    """Assert Series behaviour is equivalent."""
     # chunk_size>1
     mapply.init(progressbar=False, chunk_size=5)
 
-    fn = lambda x: x**2
+    def fn(x):
+        return x**2
+
     series = pd.Series(range(100))
 
     with pytest.raises(ValueError, match="Passing axis=1 is not allowed for Series"):
         series.mapply(fn, axis=1)
 
-    # convert_dtype=False
+    # convert_dtype=False  # noqa: ERA001
     pd.testing.assert_series_equal(
         series.apply(fn, convert_dtype=False),
         series.mapply(fn, convert_dtype=False),
