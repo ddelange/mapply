@@ -169,7 +169,7 @@ def linkcode_resolve(
         )
 
     if "dev" in release:
-        # setuptools_scm (setup.py) appends a dev identifier to __version__ if there are
+        # setuptools_scm appends a dev identifier to __version__ if there are
         # commits since last tag. For readthedocs, this is only the case when building
         # 'latest' that is newer than 'stable', for which the default_branch is assumed.
         return f"{blob_url}/{default_branch}/{relsourcefile}{linespec}"
