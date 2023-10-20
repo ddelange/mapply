@@ -65,7 +65,7 @@ target-version = "py38"
 
 [tool.ruff.extend-per-file-ignores]
 "__init__.py" = ["E401", "E402"]
-"tests/*.py" = ["S101"]
+"**/tests/**/*.py" = ["S101", "D100", "D104"]
 
 [tool.ruff.isort]
 known-first-party = ["tests"]
