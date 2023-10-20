@@ -1,3 +1,4 @@
 global-exclude *
+include pyproject.toml
 graft src
 global-exclude *.pyc
