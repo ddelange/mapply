@@ -26,5 +26,7 @@ formats: all
 # to build your documentation
 # See https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html
 python:
-   install:
-   - requirements: requirements/docs.txt
+  install:
+  - method: pip
+    path: .
+  - requirements: requirements/docs.txt
