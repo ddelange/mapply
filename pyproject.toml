@@ -38,6 +38,7 @@ quiet = false
 color = true
 ignore-module = true
 ignore-nested-functions = true
+ignore-nested-classes = true
 ignore-private = true
 ignore-semiprivate = true
 
@@ -54,13 +55,14 @@ style = "google"
 arg-type-hints-in-docstring = false
 check-return-types = false
 check-yield-types = false
+allow-init-docstring = true
 
 [tool.pytest.ini_options]
 addopts = "-s --strict-markers -vv --cache-clear --doctest-modules --cov=mapply --cov-report=term --cov-report=html --cov-branch --no-cov-on-fail --ignore=docs"
 
 [tool.ruff]
 select = ["ALL"]
-ignore = ["D407", "E501", "ANN", "TRY003", "D203", "D213"] # ignores: D407 (we have google style docstrings), E501 (we have black), ANN (we have mypy), TRY003 (there is EM102), D203 (there is D211), D213 (there is D212)
+ignore = ["D407", "E501", "ANN", "TRY003", "D203", "D213", "FIX002"] # ignores: D407 (we have google style docstrings), E501 (we have black), ANN (we have mypy), TRY003 (there is EM102), D203 (there is D211), D213 (there is D212), FIX002 (we have TD002,TD003)
 target-version = "py38"
 
 [tool.ruff.extend-per-file-ignores]
