@@ -30,21 +30,8 @@ dynamic = ["version", "dependencies"] # , "optional-dependencies"
 branch = true
 omit = ["site-packages"]
 
-[tool.interrogate]
-fail-under = 100
-exclude = ["docs", "tests", ".eggs", ".env", ".venv"]
-verbose = 1
-quiet = false
-color = true
-ignore-module = true
-ignore-nested-functions = true
-ignore-nested-classes = true
-ignore-private = true
-ignore-semiprivate = true
-
 [tool.mypy]
 python_version = "3.8"
-files = ["src/**/*.py"]
 ignore_missing_imports = true
 warn_no_return = false
 disallow_untyped_defs = false
@@ -55,10 +42,10 @@ style = "google"
 arg-type-hints-in-docstring = false
 check-return-types = false
 check-yield-types = false
-allow-init-docstring = true
 
 [tool.pytest.ini_options]
 addopts = "-s --strict-markers -vv --cache-clear --doctest-modules --cov=mapply --cov-report=term --cov-report=html --cov-branch --no-cov-on-fail --ignore=docs"
+filterwarnings = ["ignore::DeprecationWarning"]
 
 [tool.ruff]
 select = ["ALL"]
