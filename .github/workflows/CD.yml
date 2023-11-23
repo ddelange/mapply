@@ -1,19 +1,18 @@
-# This workflows will upload a Python Package using Twine when a release is created
-# For more information see: https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#publishing-to-package-registries
-
 name: CD
 
 on:
   release:
-    types: [released, prereleased]
+    types: [prereleased, released]
 
 jobs:
   deploy:
-
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # softprops/action-gh-release
+      id-token: write  # pypa/gh-action-pypi-publish
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
@@ -24,15 +23,20 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install -U pip setuptools wheel twine build
+        pip install -U pip setuptools wheel build
 
-    - name: Build and publish
-      env:
-        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+    - name: Build package distributions
       run: |
         python -m build
-        twine upload dist/*
+
+    - name: Upload package distributions as release assets
+      uses: softprops/action-gh-release@v0.1.15
+      with:
+        files: dist/*
+
+    # https://github.com/pypa/gh-action-pypi-publish#trusted-publishing
+    - name: Publish package distributions to PyPI
+      uses: pypa/gh-action-pypi-publish@v1.8.10
 
     - uses: apexskier/github-release-commenter@v1
       with:
