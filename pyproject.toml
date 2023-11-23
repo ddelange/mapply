@@ -49,12 +49,24 @@ filterwarnings = ["ignore::DeprecationWarning"]
 
 [tool.ruff]
 select = ["ALL"]
-ignore = ["D407", "E501", "ANN", "TRY003", "D203", "D213", "FIX002"] # ignores: D407 (we have google style docstrings), E501 (we have black), ANN (we have mypy), TRY003 (there is EM102), D203 (there is D211), D213 (there is D212), FIX002 (we have TD002,TD003)
-target-version = "py38"
+ignore = [
+  "D107", # we have pydoclint with class docstring
+  "D407", # we have google style docstrings
+  "E501", # we have black
+  "ANN", # we have mypy
+  "TRY003", # there is EM102
+  "D203", # there is D211
+  "D213", # there is D212
+  "FIX002" # there is TD002,TD003
+]
 
 [tool.ruff.extend-per-file-ignores]
 "__init__.py" = ["E401", "E402"]
-"**/tests/**/*.py" = ["S101", "D100", "D104"]
+"**/tests/**/*.py" = [
+  "S101", # assert is fine in tests
+  "D100", # tests is not a package
+  "D104" # tests modules don't need docstrings
+]
 
 [tool.ruff.isort]
 known-first-party = ["tests"]
