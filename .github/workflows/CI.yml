@@ -9,7 +9,7 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: n1hility/cancel-previous-runs@v2
+      - uses: n1hility/cancel-previous-runs@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -20,7 +20,7 @@ jobs:
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
@@ -30,13 +30,13 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: Pip cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements/*.txt') }}
 
     - name: Pre-commit cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.cache/pre-commit
         key: ${{ runner.os }}-pre-commit-${{ matrix.python-version }}-${{ hashFiles('**/requirements/ci.txt') }}-${{ hashFiles('.pre-commit-config.yaml') }}
