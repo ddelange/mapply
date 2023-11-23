@@ -63,7 +63,9 @@ ignore = [
 [tool.ruff.extend-per-file-ignores]
 "__init__.py" = ["E401", "E402"]
 "**/tests/**/*.py" = [
-  "S101" # assert is fine in tests
+  "S101", # assert is fine in tests
+  "D100", # tests is not a package
+  "D104" # tests modules don't need docstrings
 ]
 
 [tool.ruff.isort]
