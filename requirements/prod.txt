@@ -1,3 +1,4 @@
-pathos>=0.2.0
+pathos>=0.3.1  # https://github.com/uqfoundation/pathos/pull/252
+multiprocess
 psutil
 tqdm>=4.27  # from tqdm.auto import tqdm

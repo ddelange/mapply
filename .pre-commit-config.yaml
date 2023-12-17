@@ -9,7 +9,7 @@ repos:
     additional_dependencies: ['gibberish-detector']
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.1.6
+  rev: v0.1.8
   hooks:
   - id: ruff
     args: [--fix, --exit-non-zero-on-fix]
@@ -41,6 +41,7 @@ repos:
   rev: v0.23.1
   hooks:
   - id: toml-sort-fix
+    args: ['--trailing-comma-inline-array']
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v4.4.0
