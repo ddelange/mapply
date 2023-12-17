@@ -57,15 +57,14 @@ ignore = [
   "TRY003", # there is EM102
   "D203", # there is D211
   "D213", # there is D212
-  "FIX002" # there is TD002,TD003
+  "FIX002", # there is TD002,TD003
 ]
 
 [tool.ruff.extend-per-file-ignores]
-"__init__.py" = ["E401", "E402"]
 "**/tests/**/*.py" = [
   "S101", # assert is fine in tests
   "D100", # tests is not a package
-  "D104" # tests modules don't need docstrings
+  "D104", # tests modules don't need docstrings
 ]
 
 [tool.ruff.isort]
