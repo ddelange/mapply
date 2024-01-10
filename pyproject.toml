@@ -8,7 +8,7 @@ description = "Sensible multi-core apply function for Pandas"
 readme = "README.md"
 urls = {Repository = "https://github.com/ddelange/mapply", Documentation = "https://mapply.readthedocs.io"}
 authors = [{name = "ddelange", email = "ddelange@delange.dev"}]
-requires-python = ">=3.8" # sync with classifiers below, and tool.ruff and tool.mypy
+requires-python = ">=3.9" # sync with classifiers below, and tool.ruff and tool.mypy
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
@@ -16,7 +16,6 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
@@ -31,7 +30,7 @@ branch = true
 omit = ["site-packages"]
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.9"
 ignore_missing_imports = true
 warn_no_return = false
 disallow_untyped_defs = false
@@ -58,6 +57,7 @@ ignore = [
   "D203", # there is D211
   "D213", # there is D212
   "FIX002", # there is TD002,TD003
+  "TCH003", # clutters
 ]
 
 [tool.ruff.extend-per-file-ignores]
