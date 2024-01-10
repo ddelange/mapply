@@ -33,7 +33,7 @@
 # ruff: noqa: ERA001
 import logging
 from types import MethodType
-from typing import Any, Callable, Tuple
+from typing import Any, Callable
 
 from mapply.parallel import multiprocessing_imap, tqdm
 
@@ -46,7 +46,7 @@ def run_groupwise_apply(
     *,
     n_workers: int,
     progressbar: bool,
-    args: Tuple[Any, ...] = (),  # noqa: FA100
+    args: tuple[Any, ...] = (),
     **kwargs: Any,
 ):
     """Patch GroupBy.grouper.apply, applying func to each group in parallel."""

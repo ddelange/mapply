@@ -57,6 +57,7 @@ ignore = [
   "D203", # there is D211
   "D213", # there is D212
   "FIX002", # there is TD002,TD003
+  "TCH003", # clutters
 ]
 
 [tool.ruff.extend-per-file-ignores]
