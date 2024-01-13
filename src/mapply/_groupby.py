@@ -35,6 +35,8 @@ import logging
 from types import MethodType
 from typing import Any, Callable
 
+from pandas.core.groupby.ops import _is_indexed_like
+
 from mapply.parallel import multiprocessing_imap, tqdm
 
 logger = logging.getLogger(__name__)
@@ -52,11 +54,8 @@ def run_groupwise_apply(
     """Patch GroupBy.grouper.apply, applying func to each group in parallel."""
 
     def apply(self, f, data, axis=0):
-        # patching https://github.com/pandas-dev/pandas/blob/v1.5.3/pandas/core/groupby/ops.py#L823
+        # patching https://github.com/pandas-dev/pandas/blob/v2.1.4/pandas/core/groupby/ops.py#L890
         # with a multiprocessing_imap
-        # +
-        from pandas.core.groupby.ops import _is_indexed_like
-
         mutated = False
         splitter = self._get_splitter(data, axis=axis)
         group_keys = self.group_keys_seq
@@ -65,40 +64,31 @@ def run_groupwise_apply(
         # This calls DataSplitter.__iter__
         zipped = zip(group_keys, splitter)
 
-        # +
-        group_axes_list = []
-        splitter_gen = (
-            (
-                # mimic the side-effects commented out below
-                object.__setattr__(group, "name", key)
-                or group_axes_list.append(group.axes)
-                or group
-            )
-            for key, group in zipped
-        )
-        splitter_gen = tqdm(splitter_gen, disable=True, total=splitter.ngroups)
-        zipped = zip(
-            multiprocessing_imap(
-                f,
-                splitter_gen,
-                n_workers=n_workers,
-                progressbar=progressbar,
-            ),
-            group_axes_list,
+        # rewrite the original for-loop into an imap
+        def _run_apply(args):
+            key, group = args
+            # Pinning name is needed for
+            #  test_group_apply_once_per_group,
+            #  test_inconsistent_return_type, test_set_group_name,
+            #  test_group_name_available_in_inference_pass,
+            #  test_groupby_multi_timezone
+            object.__setattr__(group, "name", key)
+
+            # group might be modified
+            group_axes = group.axes
+            res = f(group)
+            return res, group_axes
+
+        # generator with length defined (for progressbar)
+        zipped = tqdm(zipped, disable=True, total=splitter.ngroups)
+        zipped = multiprocessing_imap(
+            _run_apply,
+            zipped,
+            n_workers=n_workers,
+            progressbar=progressbar,
         )
 
-        # -
-        # for key, group in zipped:
-        #     # Pinning name is needed for
-        #     #  test_group_apply_once_per_group,
-        #     #  test_inconsistent_return_type, test_set_group_name,
-        #     #  test_group_name_available_in_inference_pass,
-        #     #  test_groupby_multi_timezone
-        #     object.__setattr__(group, "name", key)
-        #     # group might be modified
-        #     group_axes = group.axes
-        #     res = f(group)
-        # +
+        # original for-loop leftover
         for res, group_axes in zipped:
             # no changes made below this line
             if not mutated and not _is_indexed_like(res, group_axes, axis):

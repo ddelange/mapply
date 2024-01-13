@@ -103,6 +103,10 @@ def test_df_mapply():
         df.apply(lambda x: x**2),
         df.mapply(lambda x: x**2),
     )
+    pd.testing.assert_frame_equal(
+        df.groupby("E").apply(sum),
+        df.groupby("E").mapply(sum),
+    )
 
     # not all result chunks have equal size (trailing chunk)
     mapply.init(progressbar=False, chunk_size=100, n_workers=2)
