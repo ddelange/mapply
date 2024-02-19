@@ -32,12 +32,14 @@ jobs:
     - name: Pip cache
       uses: actions/cache@v4
       with:
+        save-always: true
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements/*.txt') }}
 
     - name: Pre-commit cache
       uses: actions/cache@v4
       with:
+        save-always: true
         path: ~/.cache/pre-commit
         key: ${{ runner.os }}-pre-commit-${{ matrix.python-version }}-${{ hashFiles('**/requirements/ci.txt') }}-${{ hashFiles('.pre-commit-config.yaml') }}
 
