@@ -50,7 +50,6 @@ filterwarnings = ["ignore::DeprecationWarning"]
 select = ["ALL"]
 ignore = [
   "D107", # we have pydoclint with class docstring
-  "D407", # we have google style docstrings
   "E501", # we have black
   "ANN", # we have mypy
   "TRY003", # there is EM102
@@ -69,6 +68,9 @@ ignore = [
 
 [tool.ruff.isort]
 known-first-party = ["tests"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements/prod.txt"]}

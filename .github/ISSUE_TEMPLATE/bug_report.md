@@ -21,7 +21,7 @@ assignees: ''
 <details><summary>Reproducible example</summary><p>
 
 ```py
-<example here>
+# example here
 ```
 
 ```
