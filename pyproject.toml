@@ -46,7 +46,7 @@ check-yield-types = false
 addopts = "-s --strict-markers -vv --cache-clear --doctest-modules --cov=mapply --cov-report=term --cov-report=html --cov-branch --no-cov-on-fail --ignore=docs"
 filterwarnings = ["ignore::DeprecationWarning"]
 
-[tool.ruff]
+[tool.ruff.lint]
 select = ["ALL"]
 ignore = [
   "D107", # we have pydoclint with class docstring
@@ -59,14 +59,14 @@ ignore = [
   "TCH003", # clutters
 ]
 
-[tool.ruff.extend-per-file-ignores]
+[tool.ruff.lint.extend-per-file-ignores]
 "**/tests/**/*.py" = [
   "S101", # assert is fine in tests
   "D100", # tests is not a package
   "D104", # tests modules don't need docstrings
 ]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-first-party = ["tests"]
 
 [tool.ruff.lint.pydocstyle]
