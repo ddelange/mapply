@@ -37,7 +37,7 @@ mapply.init(
     n_workers=-1,
     chunk_size=100,
     max_chunks_per_worker=8,
-    progressbar=False
+    progressbar=False,
 )
 
 df = pd.DataFrame({"A": list(range(100))})
@@ -45,7 +45,7 @@ df = pd.DataFrame({"A": list(range(100))})
 # avoid unnecessary multiprocessing:
 # due to chunk_size=100, this will act as regular apply.
 # set chunk_size=1 to skip this check and let max_chunks_per_worker decide.
-df["squared"] = df.A.mapply(lambda x: x ** 2)
+df["squared"] = df.A.mapply(lambda x: x**2)
 ```
 
 
