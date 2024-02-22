@@ -1,3 +1,4 @@
+---
 name: CI
 on:
   pull_request:
@@ -9,9 +10,9 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: n1hility/cancel-previous-runs@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: n1hility/cancel-previous-runs@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
 
   build:
     runs-on: ubuntu-20.04
@@ -41,7 +42,8 @@ jobs:
       with:
         save-always: true
         path: ~/.cache/pre-commit
-        key: ${{ runner.os }}-pre-commit-${{ matrix.python-version }}-${{ hashFiles('**/requirements/ci.txt') }}-${{ hashFiles('.pre-commit-config.yaml') }}
+        key: ${{ runner.os }}-pre-commit-${{ matrix.python-version }}-${{ hashFiles('**/requirements/ci.txt') }}-${{ hashFiles('.pre-commit-config.yaml')
+          }}
 
     - name: Install
       run: |
