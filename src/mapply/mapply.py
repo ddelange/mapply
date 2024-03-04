@@ -44,6 +44,7 @@ Standalone usage (without init):
 """
 from __future__ import annotations
 
+import warnings
 from functools import partial
 from typing import Any, Callable
 
@@ -52,6 +53,13 @@ from mapply.parallel import N_CORES, multiprocessing_imap
 
 DEFAULT_CHUNK_SIZE = 100
 DEFAULT_MAX_CHUNKS_PER_WORKER = 8
+
+
+warnings.filterwarnings(
+    action="ignore",
+    message=".*swapaxes",
+    category=FutureWarning,
+)
 
 
 def _choose_n_chunks(
