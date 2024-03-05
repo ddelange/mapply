@@ -5,13 +5,12 @@
 [![pypi Version](https://img.shields.io/pypi/v/mapply.svg?logo=pypi&logoColor=white)](https://pypi.org/project/mapply/)
 [![python](https://img.shields.io/pypi/pyversions/mapply.svg?logo=python&logoColor=white)](https://pypi.org/project/mapply/)
 [![downloads](https://static.pepy.tech/badge/mapply)](https://pypistats.org/packages/mapply)
-[![black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
 [`mapply`](https://github.com/ddelange/mapply) provides a sensible multi-core apply function for Pandas.
 
 ### mapply vs. pandarallel vs. swifter
 
-Where [`pandarallel`](https://pypi.org/project/pandarallel) relies on in-house multiprocessing and progressbars, and hard-codes 1 chunk per worker (which will cause idle CPUs when one chunk happens to be more expensive than the others), [`swifter`](https://pypi.org/project/swifter) relies on the heavy [`dask`](https://pypi.org/project/dask) framework for multiprocessing (converting to Dask DataFrames and back). In an attempt to find the golden mean, `mapply` is highly customizable and remains lightweight, using [`tqdm`](https://pypi.org/project/tqdm) for progressbars and leveraging the powerful [`pathos`](https://pypi.org/project/pathos) framework, which shadows Python's built-in multiprocessing module using [`dill`](https://pypi.org/project/dill) for universal pickling.
+Where [`pandarallel`](https://pypi.org/project/pandarallel) relies on in-house multiprocessing and progressbars, and hard-codes 1 chunk per worker (which will cause idle CPUs when one chunk happens to be more expensive than the others), [`swifter`](https://pypi.org/project/swifter) relies on the heavy [`dask`](https://pypi.org/project/dask) framework for multiprocessing (converting to Dask DataFrames and back). In an attempt to find the golden mean, `mapply` is highly customizable and remains lightweight, using [`tqdm`](https://pypi.org/project/tqdm) for progressbars and leveraging the powerful [`pathos`](https://pypi.org/project/pathos) framework, which shadows Python's built-in multiprocessing module using [`dill`](https://pypi.org/project/dill) for universal pickling. Chunks of work are assigned to worker processes "just in time" from a shared queue, allowing irregular workloads to finish faster.
 
 
 ## Installation
@@ -53,6 +52,7 @@ df["squared"] = df.A.mapply(lambda x: x**2)
 
 [![gitmoji](https://img.shields.io/badge/gitmoji-%20%F0%9F%98%9C%20%F0%9F%98%8D-ffdd67)](https://github.com/carloscuesta/gitmoji-cli)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 Run `make help` for options like installing for development, linting, testing, and building docs.
 
