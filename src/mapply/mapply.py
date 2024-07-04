@@ -61,6 +61,12 @@ warnings.filterwarnings(
     category=FutureWarning,
 )
 
+warnings.filterwarnings(
+    action="ignore",
+    message=".*grouper",
+    category=FutureWarning,
+)
+
 
 def _choose_n_chunks(
     shape: tuple[int, ...],
