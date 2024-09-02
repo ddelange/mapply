@@ -12,6 +12,8 @@ concurrency:  # https://stackoverflow.com/questions/66335225#comment133398800_72
 jobs:
   build:
     runs-on: ubuntu-20.04
+    permissions:
+      id-token: write  # codecov/codecov-action
     strategy:
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12']
@@ -43,7 +45,7 @@ jobs:
 
     - name: Install
       run: |
-        pip install -U pip setuptools wheel codecov
+        pip install -U pip setuptools wheel
         make install
 
     - name: Lint
@@ -57,7 +59,7 @@ jobs:
       if: matrix.python-version == 3.12
       run: SPHINXOPTS=-W make builddocs
 
-    - name: Codecov
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      run: codecov
+    - uses: codecov/codecov-action@v4
+      with:
+        fail_ci_if_error: true
+        use_oidc: true
