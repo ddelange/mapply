@@ -42,6 +42,7 @@ Standalone usage (without init):
 
     df["squared"] = mapply(df.A, lambda x: x ** 2, progressbar=False)
 """
+
 from __future__ import annotations
 
 import warnings

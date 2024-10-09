@@ -31,6 +31,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 import pytest
+
 from mapply.parallel import multiprocessing_imap
 
 

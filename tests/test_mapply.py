@@ -30,10 +30,11 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # SPDX-License-Identifier: BSD-3-Clause
-import mapply
 import numpy as np
 import pandas as pd
 import pytest
+
+import mapply
 
 
 def test_df_mapply():
