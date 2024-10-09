@@ -49,6 +49,7 @@ Example usage:
 
     df["squared"] = df.A.mapply(lambda x: x ** 2)
 """
+
 import contextlib
 from functools import partialmethod
 from importlib.metadata import PackageNotFoundError, version

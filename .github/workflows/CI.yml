@@ -11,12 +11,12 @@ concurrency:  # https://stackoverflow.com/questions/66335225#comment133398800_72
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     permissions:
       id-token: write  # codecov/codecov-action
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
 
     steps:
     - uses: actions/checkout@v4
@@ -31,14 +31,12 @@ jobs:
     - name: Pip cache
       uses: actions/cache@v4
       with:
-        save-always: true
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements/*.txt') }}
 
     - name: Pre-commit cache
       uses: actions/cache@v4
       with:
-        save-always: true
         path: ~/.cache/pre-commit
         key: ${{ runner.os }}-pre-commit-${{ matrix.python-version }}-${{ hashFiles('**/requirements/ci.txt') }}-${{ hashFiles('.pre-commit-config.yaml')
           }}
@@ -49,14 +47,14 @@ jobs:
         make install
 
     - name: Lint
-      if: matrix.python-version == 3.12
+      if: matrix.python-version == '3.13'
       run: make lint
 
     - name: Test
       run: make test
 
     - name: Docs
-      if: matrix.python-version == 3.12
+      if: matrix.python-version == '3.13'
       run: SPHINXOPTS=-W make builddocs
 
     - uses: codecov/codecov-action@v4
