@@ -33,13 +33,13 @@ jobs:
         python -m build
 
     - name: Upload package distributions as release assets
-      uses: softprops/action-gh-release@v2.1.0
+      uses: softprops/action-gh-release@v2.2.0
       with:
         files: dist/*
 
     # https://github.com/pypa/gh-action-pypi-publish#trusted-publishing
     - name: Publish package distributions to PyPI
-      uses: pypa/gh-action-pypi-publish@v1.12.2
+      uses: pypa/gh-action-pypi-publish@v1.12.3
 
     - uses: apexskier/github-release-commenter@v1
       with:
