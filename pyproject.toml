@@ -9,11 +9,11 @@ readme = "README.md"
 urls = {Repository = "https://github.com/ddelange/mapply", Documentation = "https://mapply.readthedocs.io"}
 authors = [{name = "ddelange", email = "ddelange@delange.dev"}]
 requires-python = ">=3.9" # sync with classifiers below, and tool.ruff and tool.mypy
+license = "BSD-3-Clause"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
   "Operating System :: OS Independent",
-  "License :: OSI Approved :: BSD License",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.9",
