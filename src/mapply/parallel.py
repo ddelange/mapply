@@ -30,7 +30,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # SPDX-License-Identifier: BSD-3-Clause
-"""Submodule containing code to distribute computation over multiple processes using :class:`pathos.multiprocessing.ProcessPool`.
+"""Submodule containing code to distribute computation over multiple processes using :class:`pathos.pools.ProcessPool`.
 
 Standalone usage:
 ::
@@ -61,7 +61,7 @@ from typing import Any, Callable
 
 import multiprocess
 import psutil
-from pathos.multiprocessing import ProcessPool
+from pathos.pools import ProcessPool
 from tqdm.auto import tqdm as _tqdm
 
 logger = logging.getLogger(__name__)
@@ -77,6 +77,7 @@ def sensible_cpu_count() -> int:
 N_CORES = sensible_cpu_count()
 MAX_TASKS_PER_CHILD = int(os.environ.get("MAPPLY_MAX_TASKS_PER_CHILD", 4))
 CONTEXT = multiprocess.get_context(os.environ.get("MAPPLY_START_METHOD"))
+POOL_CLASS = ProcessPool
 
 
 def _choose_n_workers(n_chunks: int | None, n_workers: int) -> int:
@@ -133,12 +134,14 @@ def multiprocessing_imap(
         pool = None
         stage = map(func, iterable)
     else:
-        logger.debug("Starting ProcessPool with %d workers", n_workers)
-        pool = ProcessPool(
-            n_workers,
-            maxtasksperchild=MAX_TASKS_PER_CHILD,
-            context=CONTEXT,
+        pool_kwargs = (
+            # allow changing pool: import mapply, pathos; mapply.parallel.POOL_CLASS = pathos.pools.ThreadPool
+            {"maxtasksperchild": MAX_TASKS_PER_CHILD, "context": CONTEXT}
+            if ProcessPool == POOL_CLASS
+            else {}
         )
+        logger.debug("Starting ProcessPool with %d workers", n_workers)
+        pool = POOL_CLASS(n_workers, **pool_kwargs)
 
         stage = pool.imap(func, iterable)
 
@@ -149,10 +152,10 @@ def multiprocessing_imap(
         yield from stage
     except (Exception, KeyboardInterrupt):
         if pool:
-            logger.debug("Terminating ProcessPool")
+            logger.debug("Terminating pool")
             pool.terminate()
         raise
     finally:
         if pool:
-            logger.debug("Closing ProcessPool")
+            logger.debug("Closing pool")
             pool.clear()
