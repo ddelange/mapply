@@ -12,6 +12,10 @@
 
 Where [`pandarallel`](https://pypi.org/project/pandarallel) relies on in-house multiprocessing and progressbars, and hard-codes 1 chunk per worker (which will cause idle CPUs when one chunk happens to be more expensive than the others), [`swifter`](https://pypi.org/project/swifter) relies on the heavy [`dask`](https://pypi.org/project/dask) framework for multiprocessing (converting to Dask DataFrames and back). In an attempt to find the golden mean, `mapply` is highly customizable and remains lightweight, using [`tqdm`](https://pypi.org/project/tqdm) for progressbars and leveraging the powerful [`pathos`](https://pypi.org/project/pathos) framework, which shadows Python's built-in multiprocessing module using [`dill`](https://pypi.org/project/dill) for universal pickling. Chunks of work are assigned to worker processes "just in time" from a shared queue, allowing irregular workloads to finish faster.
 
+### mapply vs. Pandas' numba engine
+
+Pandas v1.3 added built-in support for running [Numba](https://pypi.org/project/numba/) compatible code in parallel with very low overhead (see Pandas' [enhancing performance article](https://pandas.pydata.org/pandas-docs/stable/user_guide/enhancingperf.html#numba-jit-compilation)). In contrast to `mapply`, which uses [fork or spawn](https://github.com/ddelange/mapply/blob/0.1.30/src/mapply/parallel.py#L79-L80) to perform multiprocessing, Numba can only automatically parallelize a subset of operations (see Numba's [automatic parallelization article](https://numba.readthedocs.io/en/stable/user/parallel.html#numba-parallel)).
+
 
 ## Installation
 
