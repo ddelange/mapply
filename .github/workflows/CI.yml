@@ -16,7 +16,7 @@ jobs:
       id-token: write  # codecov/codecov-action
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.9', '3.13']  # sync with make targets below
 
     steps:
     - uses: actions/checkout@v4
