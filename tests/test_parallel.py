@@ -42,7 +42,7 @@ def foo(x, power):  # noqa: D103
     return pow(x, power)
 
 
-def test_multiprocessing_imap(size=100, power=1.1):  # noqa: D103
+def test_multiprocessing_imap(size=100, power=1.1):  # noqa:D103,PT028
     multicore_list1 = list(
         multiprocessing_imap(
             foo,
