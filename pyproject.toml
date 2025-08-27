@@ -47,6 +47,9 @@ check-yield-types = false
 addopts = "-s --strict-markers -vv --cache-clear --doctest-modules --cov=mapply --cov-report=term --cov-report=html --cov-branch --no-cov-on-fail --ignore=docs"
 filterwarnings = ["ignore::DeprecationWarning"]
 
+[tool.ruff]
+output-format = "concise"
+
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
@@ -57,7 +60,8 @@ ignore = [
   "D203", # there is D211
   "D213", # there is D212
   "FIX002", # there is TD002,TD003
-  "TCH003", # clutters
+  "TC003", # clutters
+  "PLC0415", # local imports are necessary for patching pandas
 ]
 
 [tool.ruff.lint.extend-per-file-ignores]

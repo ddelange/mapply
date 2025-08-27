@@ -43,14 +43,15 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
-# ruff: noqa
+# ruff: noqa:INP001,D100,ERA001,D103,RUF005,BLE001
 
 import inspect
 import sys
 from pathlib import Path
 
-from mapply import __version__
 from sphinx.ext import apidoc
+
+from mapply import __version__
 
 current_dir = Path(__file__).parent.absolute()
 base_dir = current_dir.parents[1]
@@ -146,10 +147,10 @@ def setup(app):
 # -- Options for sphinx.ext.linkcode: [source] links -------------------------
 
 
-def linkcode_resolve(
+def linkcode_resolve(  # noqa: C901
     domain,
     info,
-    blob_url=f"{project_url.rstrip('/')}/blob",
+    blob_url=f"{project_url.rstrip('/')}/blob",  # noqa: B008
     default_branch="master",  # branch used for untagged 'latest' builds on readthedocs
     tag_prefix="",  # could be for instance "v" depending on tagging convention
 ):
@@ -168,7 +169,7 @@ def linkcode_resolve(
     for part in fullname.split("."):
         try:
             obj = getattr(obj, part)
-        except Exception:
+        except Exception:  # noqa: PERF203
             return None
 
     # strip decorators, which would resolve to the source of the decorator
@@ -193,9 +194,8 @@ def linkcode_resolve(
     except ValueError as exc:
         # site-packages
         if "site-packages/" not in sourcefile:
-            raise RuntimeError(
-                "Expected a pip install -e, or install to site-packages",
-            ) from exc
+            msg = "Expected a pip install -e, or install to site-packages"
+            raise RuntimeError(msg) from exc
 
         relsourcefile = (code_dir / sourcefile.split("site-packages/")[-1]).relative_to(
             base_dir,
@@ -206,8 +206,7 @@ def linkcode_resolve(
         # commits since last tag. For readthedocs, this is only the case when building
         # 'latest' that is newer than 'stable', for which the default_branch is assumed.
         return f"{blob_url}/{default_branch}/{relsourcefile}{linespec}"
-    else:
-        return f"{blob_url}/{tag_prefix}{release}/{relsourcefile}{linespec}"
+    return f"{blob_url}/{tag_prefix}{release}/{relsourcefile}{linespec}"
 
 
 # -- Options for sphinx.ext.intersphinx --------------------------------------

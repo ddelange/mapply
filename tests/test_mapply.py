@@ -42,7 +42,7 @@ def test_df_mapply():
     mapply.init(progressbar=False, chunk_size=1)
 
     np.random.seed(1)  # noqa: NPY002
-    df = pd.DataFrame(  # noqa: PD901
+    df = pd.DataFrame(
         np.random.randint(0, 300, size=(2000, 4)),  # noqa: NPY002
         columns=list("ABCD"),
     )
@@ -111,7 +111,7 @@ def test_df_mapply():
 
     # not all result chunks have equal size (trailing chunk)
     mapply.init(progressbar=False, chunk_size=100, n_workers=2)
-    df = pd.DataFrame(np.random.randint(2, size=(5, 201)))  # noqa: NPY002, PD901
+    df = pd.DataFrame(np.random.randint(2, size=(5, 201)))  # noqa: NPY002
     pd.testing.assert_series_equal(
         df.apply(np.var),
         df.mapply(np.var),
@@ -119,7 +119,7 @@ def test_df_mapply():
 
     # concat for only one result
     mapply.init(progressbar=False, chunk_size=100, n_workers=2)
-    df = pd.DataFrame(list(range(1, 200)))  # (199, 1)  # noqa: PD901
+    df = pd.DataFrame(list(range(1, 200)))  # (199, 1)
     pd.testing.assert_series_equal(
         df.apply(sum, axis=1),
         df.mapply(sum, axis=1),
