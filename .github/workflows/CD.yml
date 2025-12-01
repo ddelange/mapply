@@ -15,7 +15,7 @@ jobs:
       pull-requests: write # apexskier/github-release-commenter
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
 
@@ -33,7 +33,7 @@ jobs:
         python -m build
 
     - name: Upload package distributions as release assets
-      uses: softprops/action-gh-release@v2.4.1
+      uses: softprops/action-gh-release@v2.5.0
       with:
         files: dist/*
 
