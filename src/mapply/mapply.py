@@ -50,6 +50,7 @@ from functools import partial
 from typing import Any
 
 from mapply._groupby import run_groupwise_apply
+from mapply._window_groupby import run_window_groupby_apply
 from mapply.parallel import N_CORES, multiprocessing_imap
 
 DEFAULT_CHUNK_SIZE = 100
@@ -120,6 +121,17 @@ def mapply(  # noqa: PLR0913
     from numpy import arange, array_split
     from pandas import Series, concat
     from pandas.core.groupby import GroupBy
+    from pandas.core.window.rolling import BaseWindowGroupby
+
+    if isinstance(df_or_series, BaseWindowGroupby):
+        return run_window_groupby_apply(
+            df_or_series,
+            func,
+            n_workers=n_workers,
+            progressbar=progressbar,
+            args=args,
+            **kwargs,
+        )
 
     if isinstance(df_or_series, GroupBy):
         return run_groupwise_apply(

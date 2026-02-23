@@ -95,3 +95,7 @@ def init(
     )
 
     setattr(PandasObject, apply_name, apply)
+
+    from pandas.core.window.rolling import BaseWindowGroupby
+
+    setattr(BaseWindowGroupby, apply_name, apply)
