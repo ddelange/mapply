@@ -16,12 +16,12 @@ jobs:
       id-token: write  # codecov/codecov-action
     strategy:
       matrix:
-        python-version: ['3.9', '3.14']  # sync with make targets below
+        python-version: ['3.11', '3.14']  # sync with make targets below
 
     steps:
     - uses: actions/checkout@v6
       with:
-        fetch-depth: 0
+        fetch-depth: 0  # for setuptools_scm
 
     - name: Set up Python
       uses: actions/setup-python@v6

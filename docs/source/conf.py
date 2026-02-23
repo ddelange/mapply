@@ -83,7 +83,7 @@ release = __version__
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "recommonmark",
+    "myst_parser",
     "sphinx_rtd_theme",
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
@@ -92,8 +92,7 @@ extensions = [
 ]
 autodoc_typehints = "description"
 
-# recommonmark extension allows mixed filetypes
-source_suffix = [".rst", ".md"]
+suppress_warnings = ["myst.header"]
 
 # Add any paths that contain templates here, relative to this directory.
 # templates_path = ["_templates"]
@@ -169,7 +168,7 @@ def linkcode_resolve(  # noqa: C901
     for part in fullname.split("."):
         try:
             obj = getattr(obj, part)
-        except Exception:  # noqa: PERF203
+        except Exception:
             return None
 
     # strip decorators, which would resolve to the source of the decorator
