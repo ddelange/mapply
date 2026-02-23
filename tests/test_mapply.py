@@ -50,13 +50,18 @@ def test_df_mapply():
     # test GroupBy
     df["E"] = [0] * (len(df) // 2) + [1] * (len(df) - len(df) // 2)
     pd.testing.assert_frame_equal(
-        df.groupby("E").apply(sum),
-        df.groupby("E").mapply(sum),
+        df.groupby("E").apply(lambda x: x.sum()),
+        df.groupby("E").mapply(lambda x: x.sum()),
     )
     # empty GroupBy
     pd.testing.assert_frame_equal(
-        df.iloc[:0].groupby("E").apply(sum),
-        df.iloc[:0].groupby("E").mapply(sum),
+        df.iloc[:0].groupby("E").apply(lambda x: x.sum()),
+        df.iloc[:0].groupby("E").mapply(lambda x: x.sum()),
+    )
+    # empty GroupBy with named function (hits empty-group special case)
+    pd.testing.assert_frame_equal(
+        df.iloc[:0].groupby("E").apply(np.sum),
+        df.iloc[:0].groupby("E").mapply(np.sum),
     )
 
     # axis as positional arg
@@ -105,8 +110,8 @@ def test_df_mapply():
         df.mapply(lambda x: x**2),
     )
     pd.testing.assert_frame_equal(
-        df.groupby("E").apply(sum),
-        df.groupby("E").mapply(sum),
+        df.groupby("E").apply(lambda x: x.sum()),
+        df.groupby("E").mapply(lambda x: x.sum()),
     )
 
     # not all result chunks have equal size (trailing chunk)
@@ -146,12 +151,6 @@ def test_series_mapply():
     with pytest.raises(ValueError, match="Passing axis=1 is not allowed for Series"):
         series.mapply(fn, axis=1)
 
-    # convert_dtype=False  # noqa: ERA001
-    pd.testing.assert_series_equal(
-        series.apply(fn, convert_dtype=False),
-        series.mapply(fn, convert_dtype=False),
-    )
-
     series = pd.Series({"a": list(range(100))})
 
-    assert isinstance(series.mapply(lambda x: sum(x))[0], np.int64)
+    assert isinstance(series.mapply(sum).iloc[0], np.int64)

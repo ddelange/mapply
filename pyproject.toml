@@ -8,7 +8,7 @@ description = "Sensible multi-core apply function for Pandas"
 readme = "README.md"
 urls = {Repository = "https://github.com/ddelange/mapply", Documentation = "https://mapply.readthedocs.io"}
 authors = [{name = "ddelange", email = "ddelange@delange.dev"}]
-requires-python = ">=3.9" # sync with classifiers below, and tool.ruff and tool.mypy
+requires-python = ">=3.11" # sync with classifiers below, and tool.ruff and tool.mypy
 license = "BSD-3-Clause"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
@@ -16,8 +16,6 @@ classifiers = [
   "Operating System :: OS Independent",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
@@ -32,7 +30,7 @@ branch = true
 omit = ["site-packages"]
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.11"
 ignore_missing_imports = true
 warn_no_return = false
 disallow_untyped_defs = false
@@ -45,8 +43,7 @@ check-return-types = false
 check-yield-types = false
 
 [tool.pytest.ini_options]
-addopts = "-s --strict-markers -vv --cache-clear --doctest-modules --cov=mapply --cov-report=term --cov-report=html --cov-branch --no-cov-on-fail --ignore=docs"
-filterwarnings = ["ignore::DeprecationWarning"]
+addopts = "-s --strict-markers -vv --cache-clear --doctest-modules --cov=mapply --cov-report=term --cov-report=html --cov-report=xml --cov-branch --no-cov-on-fail --ignore=docs"
 
 [tool.ruff]
 output-format = "concise"

@@ -45,28 +45,15 @@ Standalone usage (without init):
 
 from __future__ import annotations
 
-import warnings
+from collections.abc import Callable
 from functools import partial
-from typing import Any, Callable
+from typing import Any
 
 from mapply._groupby import run_groupwise_apply
 from mapply.parallel import N_CORES, multiprocessing_imap
 
 DEFAULT_CHUNK_SIZE = 100
 DEFAULT_MAX_CHUNKS_PER_WORKER = 8
-
-
-warnings.filterwarnings(
-    action="ignore",
-    message=".*swapaxes",
-    category=FutureWarning,
-)
-
-warnings.filterwarnings(
-    action="ignore",
-    message=".*grouper",
-    category=FutureWarning,
-)
 
 
 def _choose_n_chunks(
@@ -130,7 +117,7 @@ def mapply(  # noqa: PLR0913
     Raises:
         ValueError: if a Series is passed in combination with axis=1
     """
-    from numpy import array_split
+    from numpy import arange, array_split
     from pandas import Series, concat
     from pandas.core.groupby import GroupBy
 
@@ -163,7 +150,8 @@ def mapply(  # noqa: PLR0913
         max_chunks_per_worker,
     )
 
-    dfs = array_split(df_or_series, n_chunks, axis=opposite_axis)
+    indices = array_split(arange(df_or_series.shape[opposite_axis]), n_chunks)
+    dfs = [df_or_series.take(idx, axis=opposite_axis) for idx in indices]
 
     def run_apply(func, df_or_series, args=(), **kwargs):
         return df_or_series.apply(func, args=args, **kwargs)
@@ -181,6 +169,6 @@ def mapply(  # noqa: PLR0913
     )
 
     if isseries or len(results) == 1 or sum(map(len, results)) in df_or_series.shape:
-        return concat(results, copy=False)
+        return concat(results)
 
-    return concat(results, axis=1, copy=False)
+    return concat(results, axis=1)

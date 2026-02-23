@@ -32,8 +32,9 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # ruff: noqa: ERA001
 import logging
+from collections.abc import Callable
 from types import MethodType
-from typing import Any, Callable
+from typing import Any
 
 from pandas.core.groupby.ops import _is_indexed_like
 
@@ -51,18 +52,18 @@ def run_groupwise_apply(
     args: tuple[Any, ...] = (),
     **kwargs: Any,
 ):
-    """Patch GroupBy.grouper.apply, applying func to each group in parallel."""
+    """Patch GroupBy._grouper.apply_groupwise, applying func to each group in parallel."""
 
-    def apply(self, f, data, axis=0):
-        # patching https://github.com/pandas-dev/pandas/blob/v2.1.4/pandas/core/groupby/ops.py#L890
+    def apply(self, f, data):
+        # patching https://github.com/pandas-dev/pandas/blob/v3.0.1/pandas/core/groupby/ops.py#L1014
         # with a multiprocessing_imap
         mutated = False
-        splitter = self._get_splitter(data, axis=axis)
-        group_keys = self.group_keys_seq
+        splitter = self._get_splitter(data)
+        group_keys = self.result_index
         result_values = []
 
         # This calls DataSplitter.__iter__
-        zipped = zip(group_keys, splitter)
+        zipped = zip(group_keys, splitter, strict=True)
 
         # rewrite the original for-loop into an imap
         def _run_apply(args):
@@ -91,12 +92,13 @@ def run_groupwise_apply(
         # original for-loop leftover
         for res, group_axes in zipped:
             # no changes made below this line
-            if not mutated and not _is_indexed_like(res, group_axes, axis):
+            if not mutated and not _is_indexed_like(res, group_axes):
                 mutated = True
             result_values.append(res)
         # getattr pattern for __name__ is needed for functools.partial objects
         if len(group_keys) == 0 and getattr(f, "__name__", None) in [
             "skew",
+            "kurt",
             "sum",
             "prod",
         ]:
@@ -109,9 +111,10 @@ def run_groupwise_apply(
 
     # overwrite apply method and restore after execution
     attr = "apply_groupwise"
-    original_apply = getattr(df_or_series.grouper, attr)
-    setattr(df_or_series.grouper, attr, MethodType(apply, df_or_series.grouper))
+    grouper = df_or_series._grouper  # noqa: SLF001
+    original_apply = getattr(grouper, attr)
+    setattr(grouper, attr, MethodType(apply, grouper))
     try:
         return df_or_series.apply(func, *args, **kwargs)
     finally:
-        setattr(df_or_series.grouper, attr, original_apply)
+        setattr(grouper, attr, original_apply)

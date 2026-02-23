@@ -55,9 +55,9 @@ from __future__ import annotations
 
 import logging
 import os
-from collections.abc import Iterable, Iterator
+from collections.abc import Callable, Iterable, Iterator
 from functools import partial
-from typing import Any, Callable
+from typing import Any
 
 import multiprocess
 import psutil
