@@ -154,3 +154,143 @@ def test_series_mapply():
     series = pd.Series({"a": list(range(100))})
 
     assert isinstance(series.mapply(sum).iloc[0], np.int64)
+
+
+def test_rolling_groupby_mapply():
+    """Assert RollingGroupby behaviour is equivalent."""
+    mapply.init(progressbar=False, chunk_size=1)
+
+    np.random.seed(42)  # noqa: NPY002
+    df = pd.DataFrame(
+        {
+            "A": np.random.randint(0, 100, 200),  # noqa: NPY002
+            "B": np.random.randint(0, 100, 200),  # noqa: NPY002
+            "group": [0] * 100 + [1] * 100,
+        },
+    )
+
+    # basic RollingGroupby with custom func
+    pd.testing.assert_frame_equal(
+        df.groupby("group").rolling(3).apply(lambda x: x.sum()),
+        df.groupby("group").rolling(3).mapply(lambda x: x.sum()),
+    )
+
+    # min_periods
+    pd.testing.assert_frame_equal(
+        df.groupby("group").rolling(5, min_periods=2).apply(lambda x: x.mean()),
+        df.groupby("group").rolling(5, min_periods=2).mapply(lambda x: x.mean()),
+    )
+
+    # center=True  # noqa: ERA001
+    pd.testing.assert_frame_equal(
+        df.groupby("group").rolling(3, center=True).apply(lambda x: x.max()),
+        df.groupby("group").rolling(3, center=True).mapply(lambda x: x.max()),
+    )
+
+    # column selection (Series result)
+    pd.testing.assert_series_equal(
+        df.groupby("group")["A"].rolling(3).apply(lambda x: x.sum()),
+        df.groupby("group")["A"].rolling(3).mapply(lambda x: x.sum()),
+    )
+
+    # as_index=False  # noqa: ERA001
+    pd.testing.assert_frame_equal(
+        df.groupby("group", as_index=False).rolling(3).apply(lambda x: x.sum()),
+        df.groupby("group", as_index=False).rolling(3).mapply(lambda x: x.sum()),
+    )
+
+    # multi-level groupby
+    df["group2"] = list(range(2)) * 100
+    pd.testing.assert_frame_equal(
+        df.groupby(["group", "group2"]).rolling(3).apply(lambda x: x.sum()),
+        df.groupby(["group", "group2"]).rolling(3).mapply(lambda x: x.sum()),
+    )
+
+    # time-based rolling with 'on' parameter
+    df_ts = pd.DataFrame(
+        {
+            "A": np.random.randint(0, 100, 200),  # noqa: NPY002
+            "dt": pd.date_range("2020-01-01", periods=200, freq="D"),
+            "group": [0] * 100 + [1] * 100,
+        },
+    )
+    pd.testing.assert_frame_equal(
+        df_ts.groupby("group").rolling("3D", on="dt").apply(lambda x: x.sum()),
+        df_ts.groupby("group").rolling("3D", on="dt").mapply(lambda x: x.sum()),
+    )
+
+    # empty groupby
+    pd.testing.assert_frame_equal(
+        df.iloc[:0].groupby("group").rolling(3).apply(lambda x: x.sum()),
+        df.iloc[:0].groupby("group").rolling(3).mapply(lambda x: x.sum()),
+    )
+
+    # n_workers=1 (single-process fallback, no pool spawned)
+    mapply.init(progressbar=False, chunk_size=1, n_workers=1)
+    pd.testing.assert_frame_equal(
+        df.groupby("group").rolling(3).apply(lambda x: x.sum()),
+        df.groupby("group").rolling(3).mapply(lambda x: x.sum()),
+    )
+
+
+def test_expanding_groupby_mapply():
+    """Assert ExpandingGroupby behaviour is equivalent."""
+    mapply.init(progressbar=False, chunk_size=1)
+
+    np.random.seed(42)  # noqa: NPY002
+    df = pd.DataFrame(
+        {
+            "A": np.random.randint(0, 100, 200),  # noqa: NPY002
+            "B": np.random.randint(0, 100, 200),  # noqa: NPY002
+            "group": [0] * 100 + [1] * 100,
+        },
+    )
+
+    # basic ExpandingGroupby with custom func
+    pd.testing.assert_frame_equal(
+        df.groupby("group").expanding().apply(lambda x: x.sum()),
+        df.groupby("group").expanding().mapply(lambda x: x.sum()),
+    )
+
+    # min_periods
+    pd.testing.assert_frame_equal(
+        df.groupby("group").expanding(min_periods=3).apply(lambda x: x.mean()),
+        df.groupby("group").expanding(min_periods=3).mapply(lambda x: x.mean()),
+    )
+
+    # column selection (Series result)
+    pd.testing.assert_series_equal(
+        df.groupby("group")["A"].expanding().apply(lambda x: x.sum()),
+        df.groupby("group")["A"].expanding().mapply(lambda x: x.sum()),
+    )
+
+    # as_index=False  # noqa: ERA001
+    pd.testing.assert_frame_equal(
+        df.groupby("group", as_index=False).expanding().apply(lambda x: x.sum()),
+        df.groupby("group", as_index=False).expanding().mapply(lambda x: x.sum()),
+    )
+
+    # multi-level groupby
+    df["group2"] = list(range(2)) * 100
+    pd.testing.assert_frame_equal(
+        df.groupby(["group", "group2"]).expanding().apply(lambda x: x.sum()),
+        df.groupby(["group", "group2"]).expanding().mapply(lambda x: x.sum()),
+    )
+
+    # empty groupby
+    pd.testing.assert_frame_equal(
+        df.iloc[:0].groupby("group").expanding().apply(lambda x: x.sum()),
+        df.iloc[:0].groupby("group").expanding().mapply(lambda x: x.sum()),
+    )
+
+    # n_workers=1 (single-process fallback)
+    mapply.init(progressbar=False, chunk_size=1, n_workers=1)
+    pd.testing.assert_frame_equal(
+        df.groupby("group").expanding().apply(lambda x: x.sum()),
+        df.groupby("group").expanding().mapply(lambda x: x.sum()),
+    )
+
+    # unsupported window groupby type (e.g. EWM)
+    mapply.init(progressbar=False, chunk_size=1)
+    with pytest.raises(TypeError, match="Unsupported window groupby type"):
+        df.groupby("group").ewm(span=3).mapply(lambda x: x.sum())
