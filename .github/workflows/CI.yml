@@ -52,7 +52,7 @@ jobs:
       if: matrix.python-version == '3.14'
       run: SPHINXOPTS=-W make builddocs
 
-    - uses: codecov/codecov-action@v5
+    - uses: codecov/codecov-action@v6
       with:
         fail_ci_if_error: true
         use_oidc: true
