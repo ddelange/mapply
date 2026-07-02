@@ -68,7 +68,7 @@ def init(
     max_chunks_per_worker: int = DEFAULT_MAX_CHUNKS_PER_WORKER,
     progressbar: bool = True,
     apply_name: str = "mapply",
-):
+) -> None:
     """Patch Pandas, adding multi-core methods to PandasObject.
 
     Subsequent calls to this function will create/overwrite methods with new settings.

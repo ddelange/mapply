@@ -31,7 +31,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 import logging
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
 from typing import Any
 
 from mapply.parallel import multiprocessing_imap, tqdm
@@ -47,7 +47,7 @@ def run_window_groupby_apply(
     progressbar: bool,
     args: tuple[Any, ...] = (),
     **kwargs: Any,
-):
+) -> Any:
     """Apply func to each group's window in parallel using multiprocessing_imap."""
     from pandas import concat
     from pandas.core.window.expanding import ExpandingGroupby
@@ -79,11 +79,11 @@ def run_window_groupby_apply(
     groupby_names = grouper.names
 
     # lazy generator: yield (key, group_slice) without materializing all groups
-    def _group_iter():
+    def _group_iter() -> Iterator[tuple[Any, Any]]:
         for key in result_index:
             yield key, obj.iloc[indices[key]]
 
-    def _process_group(key_and_data):
+    def _process_group(key_and_data: Any) -> tuple[Any, Any]:
         key, group_data = key_and_data
         window_obj = getattr(group_data, window_method)(**window_kwargs)
         result = window_obj.apply(func, args=args, **kwargs)

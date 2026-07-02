@@ -51,8 +51,6 @@ Standalone usage:
     )
 """
 
-from __future__ import annotations
-
 import logging
 import os
 from collections.abc import Callable, Iterable, Iterator
@@ -77,7 +75,7 @@ def sensible_cpu_count() -> int:
 N_CORES = sensible_cpu_count()
 MAX_TASKS_PER_CHILD = int(os.environ.get("MAPPLY_MAX_TASKS_PER_CHILD", "4"))
 # default start method depends on platform ref https://github.com/uqfoundation/multiprocess/blob/0.70.18/py3.13/multiprocess/context.py#L260-L268
-CONTEXT = multiprocess.get_context(os.environ.get("MAPPLY_START_METHOD"))
+CONTEXT = multiprocess.get_context(os.environ.get("MAPPLY_START_METHOD"))  # ty: ignore[unresolved-attribute]  # multiprocess is an unstubbed multiprocessing fork
 POOL_CLASS = ProcessPool
 
 

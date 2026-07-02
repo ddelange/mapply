@@ -8,7 +8,7 @@ description = "Sensible multi-core apply function for Pandas"
 readme = "README.md"
 urls = {Repository = "https://github.com/ddelange/mapply", Documentation = "https://mapply.readthedocs.io"}
 authors = [{name = "ddelange", email = "ddelange@delange.dev"}]
-requires-python = ">=3.11" # sync with classifiers below, and tool.ruff and tool.mypy
+requires-python = ">=3.11" # sync with classifiers below, and tool.ruff and tool.ty
 license = "BSD-3-Clause"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
@@ -29,13 +29,6 @@ dynamic = ["version", "dependencies"] # , "optional-dependencies"
 branch = true
 omit = ["site-packages"]
 
-[tool.mypy]
-python_version = "3.11"
-ignore_missing_imports = true
-warn_no_return = false
-disallow_untyped_defs = false
-allow_redefinition = true
-
 [tool.pydoclint]
 style = "google"
 arg-type-hints-in-docstring = false
@@ -53,7 +46,9 @@ select = ["ALL"]
 ignore = [
   "D107", # we have pydoclint with class docstring
   "E501", # we have black
-  "ANN", # we have mypy
+  "ANN002", # don't force annotating *args
+  "ANN003", # don't force annotating **kwargs
+  "ANN401", # Any is necessary for pandas-object passthrough and **kwargs
   "TRY003", # there is EM102
   "D203", # there is D211
   "D213", # there is D212
@@ -64,9 +59,13 @@ ignore = [
 
 [tool.ruff.lint.extend-per-file-ignores]
 "**/tests/**/*.py" = [
+  "ANN", # tests don't need type annotations
   "S101", # assert is fine in tests
   "D100", # tests is not a package
   "D104", # tests modules don't need docstrings
+]
+"docs/**/*.py" = [
+  "ANN", # docs config doesn't need type annotations
 ]
 
 [tool.ruff.lint.isort]
@@ -78,4 +77,10 @@ convention = "google"
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements/prod.txt"]}
 
+[tool.setuptools.package-data]
+mapply = ["py.typed"]
+
 [tool.setuptools_scm]
+
+[tool.ty.src]
+include = ["src/mapply"]
