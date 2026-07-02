@@ -18,7 +18,7 @@ jobs:
         python-version: ['3.11', '3.14']  # sync with make targets below
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         fetch-depth: 0  # for setuptools_scm
 
@@ -28,7 +28,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: Load cache
-      uses: actions/cache@v5
+      uses: actions/cache@v6
       with:
         path: |
           ~/.cache/pre-commit
@@ -51,7 +51,7 @@ jobs:
       if: matrix.python-version == '3.14'
       run: SPHINXOPTS=-W make builddocs
 
-    - uses: codecov/codecov-action@v6
+    - uses: codecov/codecov-action@v7
       with:
         fail_ci_if_error: true
         use_oidc: true
