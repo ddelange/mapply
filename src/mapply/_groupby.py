@@ -51,10 +51,10 @@ def run_groupwise_apply(
     progressbar: bool,
     args: tuple[Any, ...] = (),
     **kwargs: Any,
-):
+) -> Any:
     """Patch GroupBy._grouper.apply_groupwise, applying func to each group in parallel."""
 
-    def apply(self, f, data):
+    def apply(self: Any, f: Callable, data: Any) -> tuple[list, bool]:
         # patching https://github.com/pandas-dev/pandas/blob/v3.0.1/pandas/core/groupby/ops.py#L1014
         # with a multiprocessing_imap
         mutated = False
@@ -66,7 +66,7 @@ def run_groupwise_apply(
         zipped = zip(group_keys, splitter, strict=True)
 
         # rewrite the original for-loop into an imap
-        def _run_apply(args):
+        def _run_apply(args: Any) -> tuple[Any, Any]:
             key, group = args
             # Pinning name is needed for
             #  test_group_apply_once_per_group,

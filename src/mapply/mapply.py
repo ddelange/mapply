@@ -43,8 +43,6 @@ Standalone usage (without init):
     df["squared"] = mapply(df.A, lambda x: x ** 2, progressbar=False)
 """
 
-from __future__ import annotations
-
 from collections.abc import Callable
 from functools import partial
 from typing import Any
@@ -63,7 +61,7 @@ def _choose_n_chunks(
     n_workers: int,
     chunk_size: int,
     max_chunks_per_worker: int,
-):
+) -> int:
     """Choose final amount of chunks to be sent to the ProcessPool."""
     # no sense running parallel if data is too small
     n_chunks = int(shape[axis] / chunk_size)
@@ -165,7 +163,12 @@ def mapply(  # noqa: PLR0913
     indices = array_split(arange(df_or_series.shape[opposite_axis]), n_chunks)
     dfs = [df_or_series.take(idx, axis=opposite_axis) for idx in indices]
 
-    def run_apply(func, df_or_series, args=(), **kwargs):
+    def run_apply(
+        func: Callable,
+        df_or_series: Any,
+        args: tuple[Any, ...] = (),
+        **kwargs: Any,
+    ) -> Any:
         return df_or_series.apply(func, args=args, **kwargs)
 
     if not isseries:
