@@ -1,13 +1,13 @@
 repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.15.21
+  rev: v0.16.6
   hooks:
   - id: ruff-check
     args: [--fix, --exit-non-zero-on-fix]
   - id: ruff-format
 
 - repo: https://github.com/astral-sh/ty-pre-commit
-  rev: v0.0.58
+  rev: v0.0.79
   hooks:
   - id: ty
     args: [--all-extras]
@@ -26,13 +26,6 @@ repos:
     args: [--baseline, .secrets.baseline]
     exclude: .*/tests/.*
     additional_dependencies: [gibberish-detector]
-
-# should be replaced in the future ref https://github.com/astral-sh/ruff/issues/3792
-- repo: https://github.com/asottile/blacken-docs
-  rev: 1.20.0
-  hooks:
-  - id: blacken-docs
-    additional_dependencies: [black==26.5.1]
 
 - repo: https://github.com/pappasam/toml-sort
   rev: v0.24.4
@@ -62,7 +55,7 @@ repos:
   - id: debug-statements
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.37.4
+  rev: 0.38.0
   hooks:
   - id: check-dependabot
   - id: check-github-workflows
