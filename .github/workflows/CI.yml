@@ -15,7 +15,7 @@ jobs:
       id-token: write  # codecov/codecov-action
     strategy:
       matrix:
-        python-version: ['3.11', '3.14']  # sync with make targets below
+        python-version: ['3.11', '3.15']  # sync with make targets below
 
     steps:
     - uses: actions/checkout@v7
@@ -41,14 +41,14 @@ jobs:
         make install
 
     - name: Lint
-      if: matrix.python-version == '3.14'
+      if: matrix.python-version == '3.15'
       run: make lint
 
     - name: Test
       run: make test
 
     - name: Docs
-      if: matrix.python-version == '3.14'
+      if: matrix.python-version == '3.15'
       run: SPHINXOPTS=-W make builddocs
 
     - uses: codecov/codecov-action@v7
