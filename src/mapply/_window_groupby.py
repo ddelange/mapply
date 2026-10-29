@@ -39,6 +39,14 @@ from mapply.parallel import multiprocessing_imap, tqdm
 logger = logging.getLogger(__name__)
 
 
+def base_window_groupby() -> type:
+    """Return the pandas base class of RollingGroupby and ExpandingGroupby."""
+    from pandas.core.window import rolling
+
+    # dict lookup instead of import keeps ty clean on both spellings (pandas<3.1: Groupby)
+    return vars(rolling).get("BaseWindowGroupBy") or vars(rolling)["BaseWindowGroupby"]
+
+
 def run_window_groupby_apply(
     window_groupby: Any,
     func: Callable,
@@ -50,15 +58,15 @@ def run_window_groupby_apply(
 ) -> Any:
     """Apply func to each group's window in parallel using multiprocessing_imap."""
     from pandas import concat
-    from pandas.core.window.expanding import ExpandingGroupby
-    from pandas.core.window.rolling import RollingGroupby
+    from pandas.core.window.expanding import Expanding
+    from pandas.core.window.rolling import Rolling
 
-    if isinstance(window_groupby, ExpandingGroupby):
+    if isinstance(window_groupby, Expanding):
         window_kwargs = {
             "min_periods": window_groupby.min_periods,
         }
         window_method = "expanding"
-    elif isinstance(window_groupby, RollingGroupby):
+    elif isinstance(window_groupby, Rolling):
         window_kwargs = {
             "window": window_groupby.window,
             "min_periods": window_groupby.min_periods,
