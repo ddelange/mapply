@@ -48,7 +48,7 @@ from functools import partial
 from typing import Any
 
 from mapply._groupby import run_groupwise_apply
-from mapply._window_groupby import run_window_groupby_apply
+from mapply._window_groupby import base_window_groupby, run_window_groupby_apply
 from mapply.parallel import N_CORES, multiprocessing_imap
 
 DEFAULT_CHUNK_SIZE = 100
@@ -119,9 +119,8 @@ def mapply(  # noqa: PLR0913
     from numpy import arange, array_split
     from pandas import Series, concat
     from pandas.core.groupby import GroupBy
-    from pandas.core.window.rolling import BaseWindowGroupby
 
-    if isinstance(df_or_series, BaseWindowGroupby):
+    if isinstance(df_or_series, base_window_groupby()):
         return run_window_groupby_apply(
             df_or_series,
             func,

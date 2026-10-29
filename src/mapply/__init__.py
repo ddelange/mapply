@@ -54,6 +54,7 @@ import contextlib
 from functools import partialmethod
 from importlib.metadata import PackageNotFoundError, version
 
+from mapply._window_groupby import base_window_groupby
 from mapply.mapply import DEFAULT_CHUNK_SIZE, DEFAULT_MAX_CHUNKS_PER_WORKER
 from mapply.mapply import mapply as _mapply
 
@@ -96,6 +97,4 @@ def init(
 
     setattr(PandasObject, apply_name, apply)
 
-    from pandas.core.window.rolling import BaseWindowGroupby
-
-    setattr(BaseWindowGroupby, apply_name, apply)
+    setattr(base_window_groupby(), apply_name, apply)

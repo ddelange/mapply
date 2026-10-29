@@ -1,20 +1,20 @@
 repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.16.6
+  rev: v0.17.3
   hooks:
   - id: ruff-check
     args: [--fix, --exit-non-zero-on-fix]
   - id: ruff-format
 
 - repo: https://github.com/astral-sh/ty-pre-commit
-  rev: v0.0.79
+  rev: v0.0.95
   hooks:
   - id: ty
     args: [--all-extras]
 
 # should be replaced in the future ref https://github.com/astral-sh/ruff/issues/12434
 - repo: https://github.com/jsh9/pydoclint
-  rev: 0.9.1
+  rev: 0.12.0
   hooks:
   - id: pydoclint
 
@@ -28,7 +28,7 @@ repos:
     additional_dependencies: [gibberish-detector]
 
 - repo: https://github.com/pappasam/toml-sort
-  rev: v0.24.4
+  rev: v0.25.0
   hooks:
   - id: toml-sort-fix
     args: [--trailing-comma-inline-array]
@@ -55,7 +55,7 @@ repos:
   - id: debug-statements
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.38.0
+  rev: 0.39.0
   hooks:
   - id: check-dependabot
   - id: check-github-workflows
